@@ -7,7 +7,7 @@ const CHAPTERS = [
   { number: 6, fallback: "챕터 6" }
 ];
 const STORAGE_KEY = "dogexam-cpt-progress-v1";
-const ANSWER_KEY_VERSION = "2026-11-06-1";
+const DATA_VERSION = "2026-11-06-2";
 const state = {
   chapters: new Map(),
   answers: readProgress(),
@@ -381,12 +381,12 @@ function submitMock() {
 async function loadChapters() {
   await Promise.all(CHAPTERS.map(async function (entry) {
     try {
-      const response = await fetch("./data/chapter-" + entry.number + ".json");
+      const response = await fetch("./data/chapter-" + entry.number + ".json?v=" + DATA_VERSION);
       if (!response.ok) return;
       const data = await response.json();
       let answerData = null;
       try {
-        const answerResponse = await fetch("./data/answers/chapter-" + entry.number + ".json?v=" + ANSWER_KEY_VERSION);
+        const answerResponse = await fetch("./data/answers/chapter-" + entry.number + ".json?v=" + DATA_VERSION);
         if (answerResponse.ok) answerData = await answerResponse.json();
       } catch { /* Answer key files are added as they become available. */ }
       state.chapters.set(entry.number, { ...data, answerData: answerData });
