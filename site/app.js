@@ -86,12 +86,14 @@ function renderProgress() {
   const total = data ? readyQuestions(state.activeChapter).length : 0;
   const done = answerCount(state.activeChapter);
   const percent = total ? Math.round(done * 100 / total) : 0;
+  const loadedChapters = CHAPTERS.filter(function (chapter) { return Boolean(chapterData(chapter.number)); });
+  const totalAvailable = loadedChapters.reduce(function (sum, chapter) { return sum + readyQuestions(chapter.number).length; }, 0);
   document.getElementById("answeredCount").textContent = done;
   document.getElementById("progressTotal").textContent = " / " + total + " 문항 풀이";
   document.getElementById("progressPercent").textContent = percent;
   document.getElementById("progressBar").style.width = percent + "%";
   document.getElementById("chapterProgress").style.setProperty("--progress", percent + "%");
-  document.getElementById("heroReady").textContent = data ? "1장 포함 · " + total + "문항 학습 가능" : "문제 자료 준비 중";
+  document.getElementById("heroReady").textContent = loadedChapters.length ? loadedChapters.length + "개 장 포함 · " + totalAvailable + "문항 학습 가능" : "문제 자료 준비 중";
 }
 function renderIndex() {
   const data = currentChapter();
@@ -180,17 +182,31 @@ function fullMockReady() {
 }
 function renderMockAvailability() {
   const fullReady = fullMockReady();
-  const ready1 = keyedReadyQuestions(1).length;
-  const practice1 = readyQuestions(1).length;
   const card = document.getElementById("mockAvailability");
-  const missing = CHAPTERS.filter(function (chapter) { return keyedReadyQuestions(chapter.number).length < 10; }).map(function (chapter) { return "챕터 " + chapter.number; });
   if (fullReady) {
     card.innerHTML = '<span class="availability-icon">✓</span><div class="availability-copy"><b>60문항 모의시험을 시작할 수 있어요.</b><p>각 챕터의 정답이 있는 문제 중 10개를 무작위로 출제합니다. 답안은 제출 전까지 수정할 수 있어요.</p><div class="availability-actions"><button type="button" id="startFullMock" class="primary">모의시험 시작하기 ↗</button></div></div>';
     document.getElementById("startFullMock").addEventListener("click", startFullMock);
   } else {
-    card.innerHTML = '<span class="availability-icon">⌁</span><div class="availability-copy"><b>전체 모의시험은 자료 준비 후 열려요.</b><p>챕터마다 문제 10개 이상과 공식 정답 키가 준비되면 총 60문항 시험이 활성화됩니다.</p><div class="availability-meta">준비 중: ' + missing.join(" · ") + '</div><div class="availability-actions"><button type="button" id="startChapterPractice" ' + (practice1 >= 10 ? "" : "disabled") + '>1장 10문항 연습 ' + (practice1 >= 10 ? "↗" : "· 준비 중") + '</button><button type="button" id="startChapterExam" ' + (ready1 >= 10 ? "" : "disabled") + '>1장 채점 시험 ' + (ready1 >= 10 ? "↗" : "· 정답 대기") + '</button></div></div>';
-    document.getElementById("startChapterPractice").addEventListener("click", function () { if (practice1 >= 10) startChapterMock(1, false); });
-    document.getElementById("startChapterExam").addEventListener("click", function () { if (ready1 >= 10) startChapterMock(1, true); });
+    const missingQuestions = CHAPTERS.filter(function (chapter) { return readyQuestions(chapter.number).length < 10; });
+    const waitingKeys = CHAPTERS.filter(function (chapter) { return keyedReadyQuestions(chapter.number).length < 10; });
+    const availability = [];
+    if (missingQuestions.length) availability.push("문제 준비 중: " + missingQuestions.map(function (chapter) { return "챕터 " + chapter.number; }).join(" · "));
+    if (waitingKeys.length) availability.push("정답 데이터 대기: " + waitingKeys.map(function (chapter) { return "챕터 " + chapter.number; }).join(" · "));
+    const practiceButtons = CHAPTERS.map(function (chapter) {
+      const available = readyQuestions(chapter.number).length >= 10;
+      return '<button type="button" data-chapter-practice="' + chapter.number + '" ' + (available ? "" : "disabled") + '>챕터 ' + chapter.number + ' 10문항 연습 ' + (available ? "↗" : "· 준비 중") + '</button>';
+    }).join("");
+    const examButtons = CHAPTERS.map(function (chapter) {
+      const available = keyedReadyQuestions(chapter.number).length >= 10;
+      return '<button type="button" data-chapter-exam="' + chapter.number + '" ' + (available ? "" : "disabled") + '>챕터 ' + chapter.number + ' 채점 시험 ' + (available ? "↗" : "· 정답 대기") + '</button>';
+    }).join("");
+    card.innerHTML = '<span class="availability-icon">⌁</span><div class="availability-copy"><b>전체 모의시험은 정답 자료 준비 후 열려요.</b><p>각 챕터 문제는 10문항씩 랜덤 연습할 수 있어요. 공식 정답 키가 준비된 챕터는 채점 시험도 열립니다.</p><div class="availability-meta">' + availability.join("<br>") + '</div><div class="availability-actions">' + practiceButtons + examButtons + '</div></div>';
+    card.querySelectorAll("[data-chapter-practice]").forEach(function (button) {
+      button.addEventListener("click", function () { startChapterMock(Number(button.dataset.chapterPractice), false); });
+    });
+    card.querySelectorAll("[data-chapter-exam]").forEach(function (button) {
+      button.addEventListener("click", function () { startChapterMock(Number(button.dataset.chapterExam), true); });
+    });
   }
 }
 function startFullMock() {
