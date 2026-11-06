@@ -4,12 +4,12 @@ CPT 시험 연습 사이트의 정적 페이지입니다. 현재는 기본 안�
 
 ## 구성
 
-- \`site/\`: GitHub Pages에 배포되는 사이트 파일
-- \`.github/workflows/deploy-pages.yml\`: \`main\` 브랜치에 변경 사항이 올라오면 사이트를 배포하는 GitHub Actions 워크플로
+- `site/`: GitHub Pages에 배포되는 사이트 파일
+- `.github/workflows/deploy-pages.yml`: `main` 브랜치에 변경 사항이 올라오면 사이트를 배포하는 GitHub Actions 워크플로
 
 ## 첫 배포 설정
 
-저장소에서 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 선택합니다. 설정 후 \`main\`에 커밋이 올라오면 자동으로 배포되고, Actions 탭에서 진행 상태와 사이트 주소를 확인할 수 있습니다.
+저장소에서 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 선택합니다. 설정 후 `main`에 커밋이 올라오면 자동으로 배포되고, Actions 탭에서 진행 상태와 사이트 주소를 확인할 수 있습니다.
 
 예상 주소: <https://seolhwa0107.github.io/dogexam_cpt/>
 
