@@ -35,6 +35,37 @@ function chapterAnswers(number) {
   return data && data.answerData && data.answerData.answers ? data.answerData.answers : {};
 }
 function isReady(question) { return question && question.status !== "incomplete" && Array.isArray(question.choices) && question.choices.length >= 2; }
+function isGradeableKey(question, key) {
+  if (!isReady(question) || key === undefined || key === null) return false;
+  const labels = new Set(question.choices.map(function (choice) { return choice.label; }));
+  const expected = Array.isArray(key) ? key : [key];
+  return expected.length > 0 && expected.every(function (label) { return typeof label === "string" && labels.has(label); });
+}
+function selectionIndexes(question, saved) {
+  if (!question || !Array.isArray(question.choices) || saved === undefined || saved === null) return [];
+  let selection = saved;
+  if (selection && typeof selection === "object" && !Array.isArray(selection)) selection = selection.selected;
+  if (Array.isArray(selection)) {
+    if (selection.every(Number.isInteger)) return selection.filter(function (index) { return index >= 0 && index < question.choices.length; });
+    return selection.map(function (label) { return question.choices.findIndex(function (choice) { return choice.label === label; }); }).filter(function (index) { return index >= 0; });
+  }
+  if (typeof selection === "string") {
+    const index = question.choices.findIndex(function (choice) { return choice.label === selection; });
+    return index < 0 ? [] : [index];
+  }
+  return [];
+}
+function hasSelection(question, saved) { return selectionIndexes(question, saved).length > 0; }
+function answerConfirmed(saved) { return Boolean(saved && typeof saved === "object" && !Array.isArray(saved) && saved.checked); }
+function isAnswered(question, saved, key) {
+  return Array.isArray(key) ? answerConfirmed(saved) : saved !== undefined;
+}
+function responseIsCorrect(question, response, key) {
+  if (!isGradeableKey(question, key)) return false;
+  const selectedLabels = selectionIndexes(question, response).map(function (index) { return question.choices[index].label; }).sort();
+  const correctLabels = (Array.isArray(key) ? key : [key]).slice().sort();
+  return selectedLabels.length === correctLabels.length && selectedLabels.every(function (label, index) { return label === correctLabels[index]; });
+}
 function practiceAnswers(number) {
   if (!state.answers[number]) state.answers[number] = {};
   return state.answers[number];
@@ -47,12 +78,13 @@ function readyQuestions(number) {
 }
 function keyedReadyQuestions(number) {
   const keys = chapterAnswers(number);
-  return readyQuestions(number).filter(function (question) { return Boolean(keys[question.id]); });
+  return readyQuestions(number).filter(function (question) { return isGradeableKey(question, keys[question.id]); });
 }
 function answerCount(number) {
   const saved = state.answers[number] || {};
   const questions = readyQuestions(number);
-  return questions.filter(function (question) { return saved[question.id] !== undefined; }).length;
+  const keys = chapterAnswers(number);
+  return questions.filter(function (question) { return isAnswered(question, saved[question.id], keys[question.id]); }).length;
 }
 function setMode(mode) {
   state.mode = mode;
@@ -103,7 +135,7 @@ function renderIndex() {
   document.getElementById("indexCount").textContent = String(questions.length).padStart(2, "0");
   index.innerHTML = questions.map(function (question, i) {
     const ready = isReady(question);
-    const solved = saved[question.id] !== undefined;
+    const solved = isAnswered(question, saved[question.id], chapterAnswers(state.activeChapter)[question.id]);
     return '<button type="button" class="index-button ' + (i === state.activeIndex ? "is-current " : "") + (solved ? "is-solved" : "") + '" data-index="' + i + '" ' + (ready ? "" : 'disabled title="선택지 확인 중"') + ' aria-label="' + question.number + '번 문제' + (solved ? ', 풀이 완료' : '') + '">' + question.number + '</button>';
   }).join("");
   index.querySelectorAll("[data-index]").forEach(function (button) {
@@ -114,26 +146,36 @@ function renderIndex() {
     });
   });
 }
-function renderFeedback(feedback, chosen, correct) {
+function renderFeedback(feedback, question, selected, correct) {
   feedback.className = "answer-feedback";
-  if (chosen === undefined) { feedback.textContent = ""; return; }
-  if (!correct) {
-    feedback.textContent = "답안을 저장했어요. 정답 자료가 준비되면 바로 채점할게요.";
+  if (!hasSelection(question, selected)) { feedback.textContent = ""; return; }
+  if (!isGradeableKey(question, correct)) {
+    feedback.textContent = correct !== undefined && correct !== null
+      ? "원본 정답 표기가 선택지와 달라 이 문항은 자동 채점할 수 없어요."
+      : "답안을 저장했어요. 정답 자료가 준비되면 바로 채점할게요.";
     return;
   }
-  const isCorrect = chosen === correct;
+  if (Array.isArray(correct) && !answerConfirmed(selected)) {
+    feedback.textContent = "복수 선택을 마쳤다면 아래 버튼을 눌러 채점하세요.";
+    return;
+  }
+  const isCorrect = responseIsCorrect(question, selected, correct);
   feedback.classList.add(isCorrect ? "is-correct" : "is-wrong");
-  feedback.textContent = isCorrect ? "정답이에요! 잘 풀었어요." : "아쉬워요. 정답은 " + correct + "입니다.";
+  const correctText = (Array.isArray(correct) ? correct : [correct]).join(", ");
+  feedback.textContent = isCorrect ? "정답이에요! 잘 풀었어요." : "아쉬워요. 정답은 " + correctText + "입니다.";
 }
 function renderChoices(container, question, selected, correct, disabled) {
   if (!question || !isReady(question)) { container.innerHTML = ""; return; }
-  container.innerHTML = question.choices.map(function (choice) {
-    const chosen = selected === choice.label;
+  const selectedOptions = selectionIndexes(question, selected);
+  const canReveal = isGradeableKey(question, correct) && (!Array.isArray(correct) || answerConfirmed(selected));
+  const correctLabels = Array.isArray(correct) ? correct : [correct];
+  container.innerHTML = question.choices.map(function (choice, index) {
+    const chosen = selectedOptions.includes(index);
     const classes = ["choice-button"];
     if (chosen) classes.push("is-selected");
-    if (correct && choice.label === correct) classes.push("is-correct");
-    if (correct && chosen && selected !== correct) classes.push("is-wrong");
-    return '<button type="button" class="' + classes.join(" ") + '" data-choice="' + escapeHTML(choice.label) + '" ' + (disabled ? "disabled" : "") + '><span class="choice-label">' + escapeHTML(choice.label) + '</span><span>' + escapeHTML(choice.text) + '</span></button>';
+    if (canReveal && correctLabels.includes(choice.label)) classes.push("is-correct");
+    if (canReveal && chosen && !correctLabels.includes(choice.label)) classes.push("is-wrong");
+    return '<button type="button" class="' + classes.join(" ") + '" data-choice-index="' + index + '" ' + (disabled ? "disabled" : "") + '><span class="choice-label">' + escapeHTML(choice.label) + '</span><span>' + escapeHTML(choice.text) + '</span></button>';
   }).join("");
 }
 function renderPractice() {
@@ -152,14 +194,39 @@ function renderPractice() {
   document.getElementById("questionPrompt").textContent = question ? question.prompt : "이 챕터의 문제 자료를 불러올 수 없습니다.";
   const selected = question && (state.answers[state.activeChapter] || {})[question.id];
   const correct = question ? chapterAnswers(state.activeChapter)[question.id] : null;
-  renderChoices(document.getElementById("choiceList"), activeQuestion, selected, correct, Boolean(correct && selected));
+  const multiple = Array.isArray(correct);
+  const checked = answerConfirmed(selected);
+  renderChoices(document.getElementById("choiceList"), activeQuestion, selected, correct, Boolean(selected !== undefined && (!multiple || checked)));
   const feedback = document.getElementById("answerFeedback");
-  renderFeedback(feedback, selected, correct);
-  document.querySelectorAll("#choiceList [data-choice]").forEach(function (button) {
+  renderFeedback(feedback, question, selected, correct);
+  const checkAnswer = document.getElementById("checkAnswer");
+  checkAnswer.classList.toggle("hidden", !multiple);
+  checkAnswer.disabled = checked || !hasSelection(question, selected);
+  checkAnswer.textContent = checked ? "채점 완료" : "선택 답안 확인";
+  checkAnswer.onclick = function () {
+    const latest = currentQuestions()[state.activeIndex];
+    const latestSaved = practiceAnswers(state.activeChapter)[latest.id];
+    if (!Array.isArray(chapterAnswers(state.activeChapter)[latest.id]) || !hasSelection(latest, latestSaved)) return;
+    practiceAnswers(state.activeChapter)[latest.id] = { selected: selectionIndexes(latest, latestSaved), checked: true };
+    saveProgress();
+    renderPractice();
+  };
+  document.querySelectorAll("#choiceList [data-choice-index]").forEach(function (button) {
     button.addEventListener("click", function () {
       const latest = currentQuestions()[state.activeIndex];
       if (!isReady(latest)) return;
-      practiceAnswers(state.activeChapter)[latest.id] = button.dataset.choice;
+      const latestKey = chapterAnswers(state.activeChapter)[latest.id];
+      const index = Number(button.dataset.choiceIndex);
+      if (Array.isArray(latestKey)) {
+        const latestSaved = practiceAnswers(state.activeChapter)[latest.id];
+        if (answerConfirmed(latestSaved)) return;
+        const selectedOptions = selectionIndexes(latest, latestSaved);
+        const nextSelection = selectedOptions.includes(index) ? selectedOptions.filter(function (option) { return option !== index; }) : selectedOptions.concat(index);
+        practiceAnswers(state.activeChapter)[latest.id] = { selected: nextSelection, checked: false };
+      } else {
+        if (practiceAnswers(state.activeChapter)[latest.id] !== undefined) return;
+        practiceAnswers(state.activeChapter)[latest.id] = latest.choices[index].label;
+      }
       saveProgress();
       renderPractice();
     });
@@ -183,9 +250,16 @@ function fullMockReady() {
 function renderMockAvailability() {
   const fullReady = fullMockReady();
   const card = document.getElementById("mockAvailability");
+  const chapterButtons = CHAPTERS.map(function (chapter) {
+    const available = keyedReadyQuestions(chapter.number).length >= 10;
+    return '<button type="button" data-chapter-exam="' + chapter.number + '" ' + (available ? "" : "disabled") + '>챕터 ' + chapter.number + ' 10문항 시험 ' + (available ? "↗" : "· 정답 대기") + '</button>';
+  }).join("");
   if (fullReady) {
-    card.innerHTML = '<span class="availability-icon">✓</span><div class="availability-copy"><b>60문항 모의시험을 시작할 수 있어요.</b><p>각 챕터의 정답이 있는 문제 중 10개를 무작위로 출제합니다. 답안은 제출 전까지 수정할 수 있어요.</p><div class="availability-actions"><button type="button" id="startFullMock" class="primary">모의시험 시작하기 ↗</button></div></div>';
+    card.innerHTML = '<span class="availability-icon">✓</span><div class="availability-copy"><b>60문항 모의시험을 시작할 수 있어요.</b><p>각 챕터에서 정답이 있는 10문항을 무작위로 출제합니다. 챕터별 10문항 채점 시험도 선택할 수 있습니다.</p><div class="availability-actions"><button type="button" id="startFullMock" class="primary">전체 60문항 시험 시작 ↗</button>' + chapterButtons + '</div></div>';
     document.getElementById("startFullMock").addEventListener("click", startFullMock);
+    card.querySelectorAll("[data-chapter-exam]").forEach(function (button) {
+      button.addEventListener("click", function () { startChapterMock(Number(button.dataset.chapterExam), true); });
+    });
   } else {
     const missingQuestions = CHAPTERS.filter(function (chapter) { return readyQuestions(chapter.number).length < 10; });
     const waitingKeys = CHAPTERS.filter(function (chapter) { return keyedReadyQuestions(chapter.number).length < 10; });
@@ -196,10 +270,7 @@ function renderMockAvailability() {
       const available = readyQuestions(chapter.number).length >= 10;
       return '<button type="button" data-chapter-practice="' + chapter.number + '" ' + (available ? "" : "disabled") + '>챕터 ' + chapter.number + ' 10문항 연습 ' + (available ? "↗" : "· 준비 중") + '</button>';
     }).join("");
-    const examButtons = CHAPTERS.map(function (chapter) {
-      const available = keyedReadyQuestions(chapter.number).length >= 10;
-      return '<button type="button" data-chapter-exam="' + chapter.number + '" ' + (available ? "" : "disabled") + '>챕터 ' + chapter.number + ' 채점 시험 ' + (available ? "↗" : "· 정답 대기") + '</button>';
-    }).join("");
+    const examButtons = chapterButtons;
     card.innerHTML = '<span class="availability-icon">⌁</span><div class="availability-copy"><b>전체 모의시험은 정답 자료 준비 후 열려요.</b><p>각 챕터 문제는 10문항씩 랜덤 연습할 수 있어요. 공식 정답 키가 준비된 챕터는 채점 시험도 열립니다.</p><div class="availability-meta">' + availability.join("<br>") + '</div><div class="availability-actions">' + practiceButtons + examButtons + '</div></div>';
     card.querySelectorAll("[data-chapter-practice]").forEach(function (button) {
       button.addEventListener("click", function () { startChapterMock(Number(button.dataset.chapterPractice), false); });
@@ -244,9 +315,18 @@ function renderAttempt() {
   const feedback = document.getElementById("attemptFeedback");
   feedback.className = "answer-feedback";
   feedback.textContent = "";
-  document.querySelectorAll("#attemptChoices [data-choice]").forEach(function (button) {
+  document.querySelectorAll("#attemptChoices [data-choice-index]").forEach(function (button) {
     button.addEventListener("click", function () {
-      attempt.responses[item.question.id] = button.dataset.choice;
+      const index = Number(button.dataset.choiceIndex);
+      const key = chapterAnswers(item.chapter)[item.question.id];
+      if (Array.isArray(key)) {
+        const selectedOptions = selectionIndexes(item.question, attempt.responses[item.question.id]);
+        attempt.responses[item.question.id] = selectedOptions.includes(index)
+          ? selectedOptions.filter(function (option) { return option !== index; })
+          : selectedOptions.concat(index);
+      } else {
+        attempt.responses[item.question.id] = item.question.choices[index].label;
+      }
       renderAttempt();
     });
   });
@@ -265,7 +345,7 @@ function submitMock() {
     const chapterResult = results.get(item.chapter);
     chapterResult.total += 1;
     const key = chapterAnswers(item.chapter)[item.question.id];
-    if (key && attempt.responses[item.question.id] === key) { chapterResult.correct += 1; correctCount += 1; }
+    if (responseIsCorrect(item.question, attempt.responses[item.question.id], key)) { chapterResult.correct += 1; correctCount += 1; }
   });
   attempt.submitted = true;
   const score = Math.round(correctCount * 100 / attempt.items.length);
@@ -284,7 +364,8 @@ function submitMock() {
     const verdict = passed ? "합격 기준을 충족했어요!" : "조금 더 연습해 보세요.";
     resultNode.innerHTML = '<div class="result-score"><b>' + score + '</b><span>/ 100점 · ' + correctCount + " / " + attempt.items.length + ' 정답</span></div><div class="result-verdict ' + (passed ? "pass" : "fail") + '">' + verdict + '</div><div class="result-chapters">' + rows + '</div><p class="result-note">합격 기준: 총점 60점 이상이며 모든 챕터 정답률이 40% 이상이어야 합니다.</p><button type="button" id="restartMock" class="submit-button">다시 풀기 ↻</button>';
   } else {
-    resultNode.innerHTML = '<div class="result-score"><b>' + score + '</b><span>/ 100점 · ' + correctCount + " / " + attempt.items.length + ' 정답</span></div><div class="result-verdict">챕터 연습 결과</div><div class="result-chapters">' + rows + '</div><p class="result-note">이 결과는 1장 연습 채점입니다. 전체 시험 합격 여부는 6개 챕터 모의시험에서 확인할 수 있어요.</p><button type="button" id="restartMock" class="submit-button">다시 풀기 ↻</button>';
+    const chapterNumber = attempt.items[0].chapter;
+    resultNode.innerHTML = '<div class="result-score"><b>' + score + '</b><span>/ 100점 · ' + correctCount + " / " + attempt.items.length + ' 정답</span></div><div class="result-verdict">챕터 연습 결과</div><div class="result-chapters">' + rows + '</div><p class="result-note">챕터 ' + chapterNumber + ' 연습 채점 결과예요. 전체 시험 합격 기준은 6개 챕터 모의시험에서 확인할 수 있어요.</p><button type="button" id="restartMock" class="submit-button">다시 풀기 ↻</button>';
   }
   resultNode.classList.remove("hidden");
   document.getElementById("mockAttempt").classList.add("hidden");
@@ -331,7 +412,7 @@ document.getElementById("attemptPrev").addEventListener("click", function () { i
 document.getElementById("attemptNext").addEventListener("click", function () { if (state.attempt) { state.attempt.index = Math.min(state.attempt.items.length - 1, state.attempt.index + 1); renderAttempt(); } });
 document.getElementById("submitMock").addEventListener("click", function () {
   if (!state.attempt) return;
-  const unanswered = state.attempt.items.filter(function (item) { return state.attempt.responses[item.question.id] === undefined; }).length;
+  const unanswered = state.attempt.items.filter(function (item) { return !hasSelection(item.question, state.attempt.responses[item.question.id]); }).length;
   const message = unanswered ? unanswered + "문항을 풀지 않았어요. 지금 제출할까요?" : "시험을 제출할까요?";
   if (window.confirm(message)) submitMock();
 });

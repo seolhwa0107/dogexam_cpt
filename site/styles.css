@@ -105,6 +105,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
 .choice-button.is-correct { border-color: #8db956; background: #f0f7e6; color: #29451f; }
 .choice-button.is-wrong { border-color: #e6aaa2; background: #fff3f1; color: #9b3c33; }
 .choice-button:disabled { cursor: default; }
+.check-answer { margin-top: 10px; padding: 9px 13px; border: 1px solid #dce4d2; border-radius: 3px; background: #f5f8f0; color: #46563b; font-size: 10px; cursor: pointer; }
+.check-answer:disabled { opacity: .5; cursor: default; }
 .answer-feedback { display: none; margin-top: 13px; padding: 10px 12px; border-radius: 4px; background: #f4f6f0; color: #64715b; font-size: 10px; line-height: 1.6; }
 .answer-feedback:not(:empty) { display: block; }
 .answer-feedback.is-correct { background: var(--soft-green); color: #46652f; }
