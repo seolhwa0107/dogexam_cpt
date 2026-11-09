@@ -6,6 +6,13 @@ const CHAPTERS = [
   { number: 5, fallback: "챕터 5" },
   { number: 6, fallback: "챕터 6" }
 ];
+const EXAM_SUBJECTS = [
+  { key: "management", title: "반려견미용관리", questionCount: 20, chapters: [1, 2, 3] },
+  { key: "basic", title: "반려견기초미용", questionCount: 10, chapters: [4, 5] },
+  { key: "general1", title: "반려견일반미용1", questionCount: 20, chapters: [6] }
+];
+const OFFICIAL_EXAM_QUESTION_COUNT = 50;
+const OFFICIAL_EXAM_DURATION_SECONDS = 60 * 60;
 const STORAGE_KEY = "dogexam-cpt-progress-v1";
 const EXAM_HISTORY_KEY = "dogexam-cpt-exam-history-v1";
 const DATA_VERSION = "2026-11-06-2";
@@ -270,41 +277,44 @@ function shuffle(items) {
   }
   return copy;
 }
+function subjectPool(subject) {
+  return subject.chapters.flatMap(function (number) {
+    return keyedReadyQuestions(number).map(function (question) {
+      return { chapter: number, question: question, subject: subject.key, subjectTitle: subject.title };
+    });
+  });
+}
 function fullMockReady() {
-  return CHAPTERS.every(function (chapter) { return keyedReadyQuestions(chapter.number).length >= 10; });
+  return EXAM_SUBJECTS.every(function (subject) { return subjectPool(subject).length >= subject.questionCount; });
 }
 function renderMockAvailability() {
   const fullReady = fullMockReady();
   const card = document.getElementById("mockAvailability");
+  const subjectSummary = EXAM_SUBJECTS.map(function (subject) {
+    const available = subjectPool(subject).length;
+    return subject.title + " " + subject.questionCount + "문항" + (fullReady ? "" : " (" + available + "문항 채점 가능)");
+  }).join(" · ");
   const chapterButtons = CHAPTERS.map(function (chapter) {
     const available = keyedReadyQuestions(chapter.number).length >= 10;
-    return '<button type="button" data-chapter-exam="' + chapter.number + '" ' + (available ? "" : "disabled") + '>챕터 ' + chapter.number + ' 10문항 시험 ' + (available ? "↗" : "· 정답 대기") + '</button>';
+    return '<button type="button" data-chapter-exam="' + chapter.number + '" ' + (available ? "" : "disabled") + '>챕터 ' + chapter.number + ' 연습 10문항 ' + (available ? "↗" : "· 정답 대기") + '</button>';
   }).join("");
+  const practiceButtons = CHAPTERS.map(function (chapter) {
+    const available = readyQuestions(chapter.number).length >= 10;
+    return '<button type="button" data-chapter-practice="' + chapter.number + '" ' + (available ? "" : "disabled") + '>챕터 ' + chapter.number + ' 연습 10문항 ' + (available ? "↗" : "· 준비 중") + '</button>';
+  }).join("");
+  const chapterActions = fullReady ? chapterButtons : practiceButtons + chapterButtons;
   if (fullReady) {
-    card.innerHTML = '<span class="availability-icon">✓</span><div class="availability-copy"><b>60문항 모의시험을 시작할 수 있어요.</b><p>각 챕터에서 정답이 있는 10문항을 무작위로 출제합니다. 챕터별 10문항 채점 시험도 선택할 수 있습니다.</p><div class="availability-actions"><button type="button" id="startFullMock" class="primary">전체 60문항 시험 시작 ↗</button>' + chapterButtons + '</div></div>';
+    card.innerHTML = '<span class="availability-icon">✓</span><div class="availability-copy"><b>정식 3급 필기 모의시험을 시작할 수 있어요.</b><p>공식 과목 구성과 동일하게 50문항을 60분 동안 풉니다. 과목별 문제 수는 20 · 10 · 20문항입니다.</p><div class="availability-meta">' + subjectSummary + '</div><div class="availability-actions"><button type="button" id="startFullMock" class="primary">정식 CBT 시작 · 50문항 ↗</button>' + chapterActions + '</div></div>';
     document.getElementById("startFullMock").addEventListener("click", startFullMock);
-    card.querySelectorAll("[data-chapter-exam]").forEach(function (button) {
-      button.addEventListener("click", function () { startChapterMock(Number(button.dataset.chapterExam), true); });
-    });
   } else {
-    const missingQuestions = CHAPTERS.filter(function (chapter) { return readyQuestions(chapter.number).length < 10; });
-    const waitingKeys = CHAPTERS.filter(function (chapter) { return keyedReadyQuestions(chapter.number).length < 10; });
-    const availability = [];
-    if (missingQuestions.length) availability.push("문제 준비 중: " + missingQuestions.map(function (chapter) { return "챕터 " + chapter.number; }).join(" · "));
-    if (waitingKeys.length) availability.push("정답 데이터 대기: " + waitingKeys.map(function (chapter) { return "챕터 " + chapter.number; }).join(" · "));
-    const practiceButtons = CHAPTERS.map(function (chapter) {
-      const available = readyQuestions(chapter.number).length >= 10;
-      return '<button type="button" data-chapter-practice="' + chapter.number + '" ' + (available ? "" : "disabled") + '>챕터 ' + chapter.number + ' 10문항 연습 ' + (available ? "↗" : "· 준비 중") + '</button>';
-    }).join("");
-    const examButtons = chapterButtons;
-    card.innerHTML = '<span class="availability-icon">⌁</span><div class="availability-copy"><b>전체 모의시험은 정답 자료 준비 후 열려요.</b><p>각 챕터 문제는 10문항씩 랜덤 연습할 수 있어요. 공식 정답 키가 준비된 챕터는 채점 시험도 열립니다.</p><div class="availability-meta">' + availability.join("<br>") + '</div><div class="availability-actions">' + practiceButtons + examButtons + '</div></div>';
+    card.innerHTML = '<span class="availability-icon">⌁</span><div class="availability-copy"><b>정식 모의시험은 과목별 정답 자료가 더 필요해요.</b><p>공식 모의시험은 각 과목에서 정답이 확인된 문제를 정해진 문항 수만큼 출제합니다. 챕터별 연습은 자료가 있는 범위에서 계속할 수 있어요.</p><div class="availability-meta">' + subjectSummary + '</div><div class="availability-actions">' + chapterActions + '</div></div>';
     card.querySelectorAll("[data-chapter-practice]").forEach(function (button) {
       button.addEventListener("click", function () { startChapterMock(Number(button.dataset.chapterPractice), false); });
     });
-    card.querySelectorAll("[data-chapter-exam]").forEach(function (button) {
-      button.addEventListener("click", function () { startChapterMock(Number(button.dataset.chapterExam), true); });
-    });
   }
+  card.querySelectorAll("[data-chapter-exam]").forEach(function (button) {
+    button.addEventListener("click", function () { startChapterMock(Number(button.dataset.chapterExam), true); });
+  });
 }
 function renderDashboard() {
   const history = state.examHistory.filter(function (record) { return record && Number(record.total) > 0; });
@@ -364,7 +374,9 @@ function renderDashboard() {
 
   const recent = history.slice().sort(function (a, b) { return String(b.submittedAt).localeCompare(String(a.submittedAt)); }).slice(0, 6);
   document.getElementById("recentAttempts").innerHTML = recent.length ? recent.map(function (record) {
-    const rate = Math.round((Number(record.correct) || 0) * 100 / Number(record.total));
+    const rate = record.examType === "official" && Number.isFinite(Number(record.score))
+      ? Number(record.score)
+      : Math.round((Number(record.correct) || 0) * 100 / Number(record.total));
     const date = new Date(record.submittedAt);
     const dateText = Number.isNaN(date.getTime()) ? "" : new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(date);
     return '<div class="recent-attempt"><div><b>' + escapeHTML(record.label || "모의고사") + '</b><small>' + escapeHTML(dateText) + '</small></div><span>' + record.correct + ' / ' + record.total + '</span><strong>' + rate + '%</strong></div>';
@@ -372,24 +384,45 @@ function renderDashboard() {
   document.getElementById("dashboardEmpty").classList.toggle("hidden", history.length > 0);
 }
 function startFullMock() {
-  const items = [];
-  CHAPTERS.forEach(function (chapter) {
-    const number = chapter.number;
-    shuffle(keyedReadyQuestions(number)).slice(0, 10).forEach(function (question) { items.push({ chapter: number, question: question }); });
+  const items = EXAM_SUBJECTS.flatMap(function (subject) {
+    return shuffle(subjectPool(subject)).slice(0, subject.questionCount);
   });
-  beginMock(items, true);
+  beginMock(items, true, true);
 }
 function startChapterMock(number, graded) {
   const pool = graded ? keyedReadyQuestions(number) : readyQuestions(number);
   const items = shuffle(pool).slice(0, 10).map(function (question) { return { chapter: number, question: question }; });
-  beginMock(items, graded);
+  beginMock(items, graded, false);
 }
-function beginMock(items, graded) {
-  state.attempt = { items: items, index: 0, responses: {}, graded: graded, submitted: false };
+function beginMock(items, graded, isOfficial) {
+  if (state.attempt && state.attempt.timerId) window.clearInterval(state.attempt.timerId);
+  state.attempt = {
+    items: items,
+    index: 0,
+    responses: {},
+    graded: graded,
+    isOfficial: Boolean(isOfficial),
+    submitted: false,
+    endsAt: isOfficial ? Date.now() + OFFICIAL_EXAM_DURATION_SECONDS * 1000 : null,
+    timerId: null
+  };
   document.getElementById("mockResult").classList.add("hidden");
   document.getElementById("mockAttempt").classList.remove("hidden");
   renderAttempt();
+  if (state.attempt.isOfficial) {
+    state.attempt.timerId = window.setInterval(updateAttemptTimer, 1000);
+    updateAttemptTimer();
+  }
   document.getElementById("mockAttempt").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function updateAttemptTimer() {
+  const attempt = state.attempt;
+  if (!attempt || !attempt.isOfficial || attempt.submitted) return;
+  const remaining = Math.max(0, Math.ceil((attempt.endsAt - Date.now()) / 1000));
+  const timer = document.getElementById("attemptTimer");
+  timer.textContent = String(Math.floor(remaining / 60)).padStart(2, "0") + ":" + String(remaining % 60).padStart(2, "0");
+  timer.classList.toggle("is-warning", remaining <= 5 * 60);
+  if (remaining === 0) submitMock(true);
 }
 function renderAttempt() {
   const attempt = state.attempt;
@@ -398,7 +431,10 @@ function renderAttempt() {
   const saved = attempt.responses[item.question.id];
   // Mock answers stay hidden until submission, even when the key is available.
   const correct = null;
-  document.getElementById("attemptChapter").textContent = "CHAPTER " + item.chapter + " · " + (chapterData(item.chapter).title || "");
+  const subject = EXAM_SUBJECTS.find(function (entry) { return entry.key === item.subject; }) || EXAM_SUBJECTS.find(function (entry) { return entry.chapters.includes(item.chapter); });
+  document.getElementById("attemptSubject").textContent = item.subjectTitle || (subject ? subject.title : "단원 연습");
+  document.getElementById("attemptChapter").textContent = "챕터 " + item.chapter + " · " + (chapterData(item.chapter).title || "");
+  document.getElementById("attemptTimer").classList.toggle("hidden", !attempt.isOfficial);
   document.getElementById("attemptPosition").textContent = String(attempt.index + 1).padStart(2, "0") + " / " + String(attempt.items.length).padStart(2, "0");
   document.getElementById("attemptProgressBar").style.width = ((attempt.index + 1) * 100 / attempt.items.length) + "%";
   document.getElementById("attemptPrompt").textContent = item.question.prompt;
@@ -466,55 +502,94 @@ function showUnansweredDialog(unanswered) {
   }).join("");
   document.getElementById("unansweredDialog").showModal();
 }
-function submitMock() {
+function submitMock(timeExpired) {
   const attempt = state.attempt;
   if (!attempt || attempt.submitted) return;
-  const results = new Map();
+  if (attempt.timerId) window.clearInterval(attempt.timerId);
+  attempt.timerId = null;
+  attempt.autoSubmitted = Boolean(timeExpired);
+  const unansweredDialog = document.getElementById("unansweredDialog");
+  if (unansweredDialog.open) unansweredDialog.close();
+
+  const chapterResults = new Map();
+  const subjectResults = new Map();
   let correctCount = 0;
   attempt.items.forEach(function (item) {
-    if (!results.has(item.chapter)) results.set(item.chapter, { correct: 0, total: 0 });
-    const chapterResult = results.get(item.chapter);
-    chapterResult.total += 1;
+    if (!chapterResults.has(item.chapter)) chapterResults.set(item.chapter, { correct: 0, total: 0 });
+    chapterResults.get(item.chapter).total += 1;
+    if (item.subject) {
+      if (!subjectResults.has(item.subject)) subjectResults.set(item.subject, { title: item.subjectTitle, correct: 0, total: 0 });
+      subjectResults.get(item.subject).total += 1;
+    }
     const key = chapterAnswers(item.chapter)[item.question.id];
-    if (responseIsCorrect(item.question, attempt.responses[item.question.id], key)) { chapterResult.correct += 1; correctCount += 1; }
+    if (responseIsCorrect(item.question, attempt.responses[item.question.id], key)) {
+      chapterResults.get(item.chapter).correct += 1;
+      if (item.subject) subjectResults.get(item.subject).correct += 1;
+      correctCount += 1;
+    }
   });
   attempt.submitted = true;
-  const score = Math.round(correctCount * 100 / attempt.items.length);
-  const passedChapters = Array.from(results.values()).every(function (result) { return result.correct / result.total >= .4; });
-  const isFullExam = attempt.graded && attempt.items.length === 60;
-  const passed = isFullExam && score >= 60 && passedChapters;
+
+  const subjectStats = EXAM_SUBJECTS.map(function (subject) {
+    const result = subjectResults.get(subject.key) || { title: subject.title, correct: 0, total: 0 };
+    return {
+      key: subject.key,
+      title: subject.title,
+      correct: result.correct,
+      total: result.total,
+      score: result.total ? result.correct * 100 / result.total : 0
+    };
+  });
+  const isOfficialExam = attempt.isOfficial && attempt.items.length === OFFICIAL_EXAM_QUESTION_COUNT;
+  const averageSubjectScore = subjectStats.reduce(function (sum, subject) { return sum + subject.score; }, 0) / EXAM_SUBJECTS.length;
+  const score = isOfficialExam ? Math.round(averageSubjectScore) : Math.round(correctCount * 100 / attempt.items.length);
+  const passedSubjects = subjectStats.every(function (subject) { return subject.total > 0 && subject.score >= 40; });
+  const passed = isOfficialExam && averageSubjectScore >= 60 && passedSubjects;
+
   if (attempt.graded) {
     saveExamHistory({
-      label: isFullExam ? "전체 모의시험" : "챕터 " + attempt.items[0].chapter + " 시험",
+      formatVersion: 2,
+      examType: isOfficialExam ? "official" : "chapter-practice",
+      label: isOfficialExam ? "정식 3급 필기 모의시험" : "챕터 " + attempt.items[0].chapter + " 연습시험",
       submittedAt: new Date().toISOString(),
       total: attempt.items.length,
       correct: correctCount,
       score: score,
-      passed: isFullExam ? passed : null,
-      chapterStats: Array.from(results.entries()).map(function (entry) {
+      passed: isOfficialExam ? passed : null,
+      chapterStats: Array.from(chapterResults.entries()).map(function (entry) {
         return { number: entry[0], correct: entry[1].correct, total: entry[1].total };
-      })
+      }),
+      subjectStats: isOfficialExam ? subjectStats.map(function (subject) {
+        return { key: subject.key, title: subject.title, correct: subject.correct, total: subject.total, score: Math.round(subject.score) };
+      }) : []
     });
   }
-  const rows = Array.from(results.entries()).map(function (entry) {
-    const number = entry[0], result = entry[1];
-    const title = chapterData(number).title || "챕터 " + number;
-    return '<div class="result-chapter ' + (result.correct / result.total < .4 ? "below" : "") + '"><span>챕터 ' + number + " · " + escapeHTML(title) + '</span><b>' + result.correct + " / " + result.total + " (" + Math.round(result.correct * 100 / result.total) + '%)</b></div>';
-  }).join("");
+
+  const rows = isOfficialExam
+    ? subjectStats.map(function (subject, index) {
+      return '<div class="result-chapter ' + (subject.score < 40 ? "below" : "") + '"><span>과목 ' + (index + 1) + " · " + escapeHTML(subject.title) + '</span><b>' + subject.correct + " / " + subject.total + " · " + Math.round(subject.score) + '점</b></div>';
+    }).join("")
+    : Array.from(chapterResults.entries()).map(function (entry) {
+      const number = entry[0], result = entry[1];
+      const title = chapterData(number).title || "챕터 " + number;
+      return '<div class="result-chapter"><span>챕터 ' + number + " · " + escapeHTML(title) + '</span><b>' + result.correct + " / " + result.total + " (" + Math.round(result.correct * 100 / result.total) + '%)</b></div>';
+    }).join("");
+
   const resultNode = document.getElementById("mockResult");
   if (!attempt.graded) {
     resultNode.innerHTML = '<div class="result-score"><b>채점 대기</b></div><p class="result-note">공식 정답 데이터가 아직 없어 점수는 계산하지 않았어요. 답안은 제출 전까지 수정할 수 있습니다.</p><button type="button" id="restartMock" class="submit-button">다시 풀기 ↻</button>';
-  } else if (isFullExam) {
+  } else if (isOfficialExam) {
     const verdict = passed ? "합격 기준을 충족했어요!" : "조금 더 연습해 보세요.";
-    resultNode.innerHTML = '<div class="result-score"><b>' + score + '</b><span>/ 100점 · ' + correctCount + " / " + attempt.items.length + ' 정답</span></div><div class="result-verdict ' + (passed ? "pass" : "fail") + '">' + verdict + '</div><div class="result-chapters">' + rows + '</div><p class="result-note">합격 기준: 총점 60점 이상이며 모든 챕터 정답률이 40% 이상이어야 합니다.</p>' + renderWrongNotes(attempt) + '<div class="result-actions"><button type="button" id="restartMock" class="submit-button">다시 풀기 ↻</button><button type="button" class="dashboard-result-link" data-open-dashboard>성적 대시보드 보기 ↗</button></div>';
+    const timeNote = attempt.autoSubmitted ? " 제한 시간이 끝나 자동 제출되었습니다." : "";
+    resultNode.innerHTML = '<div class="result-score"><b>' + score + '</b><span>/ 100점 · 세 과목 평균 · ' + correctCount + " / " + attempt.items.length + ' 정답</span></div><div class="result-verdict ' + (passed ? "pass" : "fail") + '">' + verdict + '</div><div class="result-chapters">' + rows + '</div><p class="result-note">합격 기준: 과목별 40점 이상, 세 과목 평균 60점 이상입니다. 과목 점수는 과목별 정답률을 100점 기준으로 환산합니다.' + timeNote + '</p>' + renderWrongNotes(attempt) + '<div class="result-actions"><button type="button" id="restartMock" class="submit-button">다시 풀기 ↻</button><button type="button" class="dashboard-result-link" data-open-dashboard>성적 대시보드 보기 ↗</button></div>';
   } else {
     const chapterNumber = attempt.items[0].chapter;
-    resultNode.innerHTML = '<div class="result-score"><b>' + score + '</b><span>/ 100점 · ' + correctCount + " / " + attempt.items.length + ' 정답</span></div><div class="result-verdict">챕터 연습 결과</div><div class="result-chapters">' + rows + '</div><p class="result-note">챕터 ' + chapterNumber + ' 연습 채점 결과예요. 전체 시험 합격 기준은 6개 챕터 모의시험에서 확인할 수 있어요.</p>' + (attempt.graded ? renderWrongNotes(attempt) : "") + '<div class="result-actions"><button type="button" id="restartMock" class="submit-button">다시 풀기 ↻</button>' + (attempt.graded ? '<button type="button" class="dashboard-result-link" data-open-dashboard>성적 대시보드 보기 ↗</button>' : "") + '</div>';
+    resultNode.innerHTML = '<div class="result-score"><b>' + score + '</b><span>/ 100점 · ' + correctCount + " / " + attempt.items.length + ' 정답</span></div><div class="result-verdict">챕터별 연습 결과</div><div class="result-chapters">' + rows + '</div><p class="result-note">챕터 ' + chapterNumber + ' 연습 채점 결과입니다. 정식 필기 모의시험은 3과목 50문항, 60분으로 진행하며 과목별 40점·세 과목 평균 60점 기준을 적용합니다.</p>' + (attempt.graded ? renderWrongNotes(attempt) : "") + '<div class="result-actions"><button type="button" id="restartMock" class="submit-button">다시 풀기 ↻</button>' + (attempt.graded ? '<button type="button" class="dashboard-result-link" data-open-dashboard>성적 대시보드 보기 ↗</button>' : "") + '</div>';
   }
   resultNode.classList.remove("hidden");
   document.getElementById("mockAttempt").classList.add("hidden");
   document.getElementById("restartMock").addEventListener("click", function () {
-    beginMock(attempt.items, attempt.graded);
+    beginMock(attempt.items, attempt.graded, attempt.isOfficial);
   });
   resultNode.querySelectorAll("[data-open-dashboard]").forEach(function (button) { button.addEventListener("click", function () { setMode("dashboard"); }); });
   resultNode.scrollIntoView({ behavior: "smooth", block: "center" });
