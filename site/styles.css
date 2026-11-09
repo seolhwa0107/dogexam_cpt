@@ -146,6 +146,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
 .mobile-tabs { display: none; }
 .hidden { display: none !important; }
 .mock-heading { margin-bottom: 20px; }
+.exam-source-link { margin-left: 5px; color: #536b42; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 .mock-emblem { width: 78px; height: 78px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none; border-radius: 50%; background: #e8f0dd; color: #314b27; }
 .mock-emblem span { font: 21px var(--mono); }
 .mock-emblem small { margin-top: 2px; font: 7px var(--mono); letter-spacing: .05em; }
@@ -165,8 +166,14 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
 .availability-actions button.primary { border-color: #324a2c; background: #324a2c; color: #fff; }
 .availability-actions button:disabled { opacity: .5; cursor: not-allowed; }
 .mock-attempt { margin-top: 20px; padding: 23px; border: 1px solid #e8ebe4; border-radius: 5px; background: #fff; }
-.attempt-top { display: flex; justify-content: space-between; margin-bottom: 12px; color: #7b876e; font: 9px var(--mono); }
+.attempt-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; color: #7b876e; }
+.attempt-context { display: grid; gap: 4px; min-width: 0; }
+.attempt-subject { color: #344831; font-size: 11px; font-weight: 700; }
+.attempt-chapter { color: #929a8a; font-size: 8px; }
+.attempt-status { display: flex; align-items: center; gap: 12px; flex: none; font: 9px var(--mono); }
 .attempt-position { color: #404a3c; }
+.attempt-timer { padding: 5px 8px; border-radius: 4px; background: #f0f4e9; color: #405a32; font-weight: 600; }
+.attempt-timer.is-warning { background: #fff1ee; color: #a7483d; }
 .mock-attempt .question-prompt { margin-top: 24px; }
 .submit-row { display: flex; justify-content: flex-end; margin-top: 10px; }
 .submit-button { padding: 9px 13px; border: 0; border-radius: 3px; background: #eef3e7; color: #415b33; font-size: 9px; cursor: pointer; }
@@ -344,6 +351,11 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
   .availability-card { padding: 13px; }
   .availability-actions button { flex: 1; }
   .mock-attempt { padding: 16px 13px; }
+  .attempt-top { align-items: flex-start; }
+  .attempt-status { gap: 7px; font-size: 8px; }
+  .attempt-subject { font-size: 10px; }
+  .attempt-chapter { max-width: 190px; line-height: 1.45; }
+  .attempt-timer { padding: 4px 6px; }
   .mock-attempt .position-label { max-width: 105px; text-align: center; line-height: 1.4; }
   .dashboard-heading { min-height: 0; }
   .dashboard-stats { gap: 6px; margin-top: 12px; }
