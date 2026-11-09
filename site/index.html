@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261110-2" />
+    <link rel="stylesheet" href="./styles.css?v=20261110-4" />
   </head>
   <body>
     <div class="page-shell">
@@ -89,17 +89,17 @@
 
             <section id="mockPanel" class="panel-view hidden">
               <div class="section-heading mock-heading">
-                <div><div class="section-kicker"><span class="section-bar"></span> MOCK EXAM</div><h2>실전 감각을 확인해요.</h2><p class="section-description">챕터마다 10문항, 총 60문항으로 구성된 모의시험입니다.</p></div>
-                <div class="mock-emblem" aria-hidden="true"><span>60</span><small>QUESTIONS</small></div>
+                <div><div class="section-kicker"><span class="section-bar"></span> MOCK EXAM</div><h2>실전 감각을 확인해요.</h2><p class="section-description">공식 3급 필기 구성에 맞춘 3과목 50문항 모의시험입니다. <a class="exam-source-link" href="https://www.pskkc.or.kr/sub.php?menu_number=377" target="_blank" rel="noopener noreferrer">한국애견협회 시험구성 ↗</a></p></div>
+                <div class="mock-emblem" aria-hidden="true"><span>50</span><small>QUESTIONS</small></div>
               </div>
               <div class="exam-rules">
-                <div class="rule-card"><span class="rule-number">01</span><div><b>총점 60점 이상</b><p>60문항 기준 환산 점수</p></div></div>
-                <div class="rule-card"><span class="rule-number">02</span><div><b>챕터별 40% 이상</b><p>각 챕터 10문항 중 4문항 이상</p></div></div>
-                <div class="rule-card"><span class="rule-number">03</span><div><b>챕터별 10문항</b><p>문제는 매번 무작위로 출제</p></div></div>
+                <div class="rule-card"><span class="rule-number">01</span><div><b>총 50문항 · 60분</b><p>반려견스타일리스트 3급 필기</p></div></div>
+                <div class="rule-card"><span class="rule-number">02</span><div><b>과목별 40점 이상</b><p>세 과목 모두 과락 기준 통과</p></div></div>
+                <div class="rule-card"><span class="rule-number">03</span><div><b>세 과목 평균 60점 이상</b><p>과목별 20 · 10 · 20문항</p></div></div>
               </div>
               <div id="mockAvailability" class="availability-card"></div>
               <div id="mockAttempt" class="mock-attempt hidden">
-                <div class="attempt-top"><span id="attemptChapter" class="attempt-chapter">CHAPTER 1</span><span id="attemptPosition" class="attempt-position">01 / 60</span></div>
+                <div class="attempt-top"><div class="attempt-context"><b id="attemptSubject" class="attempt-subject">반려견미용관리</b><span id="attemptChapter" class="attempt-chapter">챕터 1 · 안전위생관리</span></div><div class="attempt-status"><span id="attemptTimer" class="attempt-timer hidden" role="timer" aria-live="off">60:00</span><span id="attemptPosition" class="attempt-position">01 / 50</span></div></div>
                 <div class="attempt-progress"><span id="attemptProgressBar"></span></div>
                 <h3 id="attemptPrompt" class="question-prompt" tabindex="-1"></h3>
                 <div id="attemptChoices" class="choice-list"></div>
@@ -147,6 +147,6 @@
 
       <footer class="footer"><a class="footer-brand" href="#top">DOG<span>CPT</span></a><span>반려견스타일리스트 3급 필기 연습</span><span class="footer-right">BUILD YOUR CONFIDENCE <i>✳</i></span></footer>
     </div>
-    <script src="./app.js?v=20261110-2" defer></script>
+    <script src="./app.js?v=20261110-4" defer></script>
   </body>
 </html>
