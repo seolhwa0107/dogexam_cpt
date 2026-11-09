@@ -38,6 +38,15 @@ function saveExamHistory(record) {
   try { localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(state.examHistory)); }
   catch { /* Keep this session's dashboard usable if browser storage is unavailable. */ }
 }
+function showFilePreviewNotice() {
+  if (window.location.protocol !== "file:") return;
+  const main = document.getElementById("top");
+  const notice = document.createElement("aside");
+  notice.className = "file-preview-notice";
+  notice.setAttribute("role", "status");
+  notice.innerHTML = '<span class="file-preview-icon" aria-hidden="true">i</span><p><b>로컬 파일 미리보기에서는 문제 데이터를 불러올 수 없어요.</b><span>브라우저가 JSON 파일 접근을 차단해 준비 중으로 표시됩니다. 배포된 사이트에서 학습해 주세요.</span></p><a href="https://seolhwa0107.github.io/dogexam_cpt/">배포 사이트 열기 ↗</a>';
+  main.insertBefore(notice, main.firstElementChild);
+}
 function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, function (character) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character];
@@ -569,4 +578,5 @@ document.getElementById("submitWithUnanswered").addEventListener("click", functi
 document.getElementById("unansweredDialog").addEventListener("click", function (event) {
   if (event.target === event.currentTarget) event.currentTarget.close();
 });
+showFilePreviewNotice();
 loadChapters();
