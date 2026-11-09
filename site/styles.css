@@ -20,6 +20,12 @@ button, a { font: inherit; }
 button { color: inherit; }
 button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offset: 3px; }
 .page-shell { width: min(1440px, 100%); margin: 0 auto; padding: 0 64px; }
+.file-preview-notice { display: flex; align-items: center; gap: 13px; margin: 20px 0 -12px; padding: 13px 16px; border: 1px solid #ead9ac; border-radius: 5px; background: #fff9e9; color: #645633; }
+.file-preview-icon { width: 23px; height: 23px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #efdfb8; font: 700 13px var(--mono); }
+.file-preview-notice p { display: grid; gap: 3px; flex: 1; margin: 0; font-size: 10px; line-height: 1.55; }
+.file-preview-notice p span { color: #827655; }
+.file-preview-notice a { flex: none; color: #314b27; font-size: 10px; font-weight: 700; text-decoration: none; }
+.file-preview-notice a:hover { text-decoration: underline; }
 .topbar { height: 82px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e7eae3; }
 .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
 .brand-mark { width: 28px; height: 28px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px; transform: rotate(-8deg); }
@@ -286,6 +292,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
   .brand-name { font-size: 16px; }
   .topbar-meta { font-size: 9px; }
   .hero { min-height: auto; display: block; padding: 26px 22px 22px; margin: 18px 0 16px; }
+  .file-preview-notice { align-items: flex-start; flex-wrap: wrap; gap: 8px 10px; margin: 14px 0 -6px; padding: 11px; }
+  .file-preview-notice p { min-width: 0; font-size: 9px; }
+  .file-preview-notice a { margin-left: 33px; font-size: 9px; }
   .hero h1 { margin: 14px 0 9px; font-size: 35px; }
   .hero-copy p { max-width: 95%; font-size: 10px; }
   .hero-note { width: 100%; margin-top: 20px; padding: 10px 11px; }
