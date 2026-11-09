@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261106-2" />
+    <link rel="stylesheet" href="./styles.css?v=20261110-1" />
   </head>
   <body>
     <div class="page-shell">
@@ -21,6 +21,7 @@
         <nav class="top-nav" aria-label="주요 메뉴">
           <button class="nav-button is-active" type="button" data-mode="practice">문제 풀이</button>
           <button class="nav-button" type="button" data-mode="mock">모의시험</button>
+          <button class="nav-button" type="button" data-mode="dashboard">성적 대시보드</button>
         </nav>
         <div class="topbar-meta"><span class="live-dot"></span><span>3급 필기 준비</span></div>
       </header>
@@ -41,8 +42,9 @@
         </section>
 
         <div class="mode-tabs mobile-tabs" role="tablist" aria-label="학습 모드">
-          <button type="button" class="mode-tab is-active" data-mode="practice">문제 풀이</button>
-          <button type="button" class="mode-tab" data-mode="mock">모의시험</button>
+          <button type="button" class="mode-tab is-active" role="tab" aria-selected="true" data-mode="practice">문제 풀이</button>
+          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="mock">모의시험</button>
+          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="dashboard">성적 현황</button>
         </div>
 
         <div class="workspace">
@@ -99,7 +101,7 @@
               <div id="mockAttempt" class="mock-attempt hidden">
                 <div class="attempt-top"><span id="attemptChapter" class="attempt-chapter">CHAPTER 1</span><span id="attemptPosition" class="attempt-position">01 / 60</span></div>
                 <div class="attempt-progress"><span id="attemptProgressBar"></span></div>
-                <h3 id="attemptPrompt" class="question-prompt"></h3>
+                <h3 id="attemptPrompt" class="question-prompt" tabindex="-1"></h3>
                 <div id="attemptChoices" class="choice-list"></div>
                 <div id="attemptFeedback" class="answer-feedback" role="status"></div>
                 <div class="question-actions"><button type="button" id="attemptPrev" class="outline-button">← <span>이전</span></button><span class="position-label">답은 제출 전까지 수정할 수 있어요</span><button type="button" id="attemptNext" class="solid-button"><span>다음</span> →</button></div>
@@ -107,12 +109,44 @@
               </div>
               <div id="mockResult" class="mock-result hidden"></div>
             </section>
+
+            <section id="dashboardPanel" class="panel-view dashboard-panel hidden">
+              <div class="section-heading dashboard-heading">
+                <div><div class="section-kicker"><span class="section-bar"></span> MY RECORD</div><h2>성적과 약점을 확인해요.</h2><p class="section-description">채점한 모의고사 기록을 모아 취약한 챕터를 보여드려요.</p></div>
+              </div>
+              <div id="dashboardStats" class="dashboard-stats"></div>
+              <div class="dashboard-grid">
+                <section class="dashboard-card">
+                  <div class="dashboard-card-heading"><div><span class="index-kicker">CHAPTER ACCURACY</span><h3>챕터별 정답률</h3></div><span aria-hidden="true">↘</span></div>
+                  <p id="weakAreaHint" class="dashboard-card-hint"></p>
+                  <div id="weakAreas" class="weak-areas"></div>
+                </section>
+                <section class="dashboard-card">
+                  <div class="dashboard-card-heading"><div><span class="index-kicker">RECENT EXAMS</span><h3>최근 모의고사</h3></div><span aria-hidden="true">◷</span></div>
+                  <div id="recentAttempts" class="recent-attempts"></div>
+                </section>
+              </div>
+              <div id="dashboardEmpty" class="dashboard-empty hidden"><b>아직 시험 기록이 없어요.</b><span>채점 가능한 모의고사를 제출하면 성적과 약한 챕터를 이곳에서 확인할 수 있어요.</span><button type="button" class="submit-button" data-mode="mock">모의시험 시작하기 ↗</button></div>
+              <p class="local-note"><span aria-hidden="true">◉</span> 시험 기록은 이 브라우저에만 저장되며 다른 기기와 동기화되지 않습니다.</p>
+            </section>
           </section>
         </div>
       </main>
 
+      <dialog id="unansweredDialog" class="modal-dialog" aria-labelledby="unansweredTitle" aria-describedby="unansweredDescription">
+        <div class="modal-card">
+          <div class="modal-header">
+            <div><span class="index-kicker">UNANSWERED</span><h2 id="unansweredTitle">답을 고르지 않은 문제</h2></div>
+            <button type="button" id="closeUnanswered" class="modal-close" aria-label="닫기">×</button>
+          </div>
+          <p id="unansweredDescription" class="modal-description"><b id="unansweredCount">0</b>문항이 미응답이에요. 번호를 누르면 해당 문제로 이동합니다.</p>
+          <div id="unansweredList" class="unanswered-list"></div>
+          <div class="modal-actions"><button type="button" id="continueMock" class="outline-button">계속 풀기</button><button type="button" id="submitWithUnanswered" class="solid-button">미응답으로 제출</button></div>
+        </div>
+      </dialog>
+
       <footer class="footer"><a class="footer-brand" href="#top">DOG<span>CPT</span></a><span>반려견스타일리스트 3급 필기 연습</span><span class="footer-right">BUILD YOUR CONFIDENCE <i>✳</i></span></footer>
     </div>
-    <script src="./app.js?v=20261106-2" defer></script>
+    <script src="./app.js?v=20261110-1" defer></script>
   </body>
 </html>
