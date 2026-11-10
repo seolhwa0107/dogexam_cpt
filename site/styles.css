@@ -149,6 +149,37 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
 .hidden { display: none !important; }
 .terms-heading { margin-bottom: 18px; }
 .terms-emblem span { font-size: 18px; }
+.term-view-tabs { display: flex; gap: 6px; margin: 17px 0 19px; padding: 4px; border: 1px solid #e4e9df; border-radius: 5px; background: #ecefe8; }
+.term-view-tab { min-height: 36px; flex: 1; border: 0; border-radius: 3px; background: transparent; color: #7d8678; font-size: 10px; cursor: pointer; }
+.term-view-tab.is-active { background: #fff; color: #354430; box-shadow: 0 1px 4px rgba(30,45,26,.08); font-weight: 700; }
+.terms-glossary { min-width: 0; }
+.glossary-tools { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
+.term-category-filters { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.term-category-filter { display: inline-flex; align-items: center; gap: 7px; min-height: 30px; padding: 0 9px; border: 1px solid #e3e8de; border-radius: 4px; background: #fff; color: #707a6a; font-size: 9px; cursor: pointer; white-space: nowrap; }
+.term-category-filter small { color: #9aa293; font: 8px var(--mono); }
+.term-category-filter:hover { border-color: #b6cc98; }
+.term-category-filter.is-active { border-color: #405b35; background: #324a2c; color: #fff; }
+.term-category-filter.is-active small { color: #d0e0be; }
+.glossary-search { display: grid; gap: 5px; width: min(230px, 30%); flex: none; color: #737d6e; font-size: 8px; }
+.glossary-search input { width: 100%; min-height: 34px; padding: 0 10px; border: 1px solid #e1e7dc; border-radius: 4px; background: #fff; color: #30382d; font: 10px var(--sans); }
+.glossary-search input::placeholder { color: #a0a79b; }
+.glossary-summary { margin: 18px 0 9px; color: #858e80; font-size: 9px; }
+.glossary-list { display: grid; gap: 9px; }
+.glossary-category-group { overflow: hidden; border: 1px solid #e5e9e1; border-radius: 5px; background: #fff; }
+.glossary-category-group > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; padding: 11px 15px; color: #354430; cursor: pointer; list-style: none; }
+.glossary-category-group > summary::-webkit-details-marker { display: none; }
+.glossary-category-name { display: flex; align-items: baseline; gap: 9px; }
+.glossary-category-name b { font-size: 11px; }
+.glossary-category-name small { color: #929a8c; font-size: 8px; }
+.glossary-category-toggle { position: relative; width: 18px; height: 18px; flex: none; border: 1px solid #e3e9dc; border-radius: 50%; }
+.glossary-category-toggle::before, .glossary-category-toggle::after { content: ""; position: absolute; top: 8px; left: 5px; width: 6px; height: 1px; background: #718064; }
+.glossary-category-toggle::after { transform: rotate(90deg); transition: transform .15s; }
+.glossary-category-group[open] .glossary-category-toggle::after { transform: rotate(0); }
+.glossary-terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; margin: 0; padding: 0 15px 13px; }
+.glossary-entry { min-width: 0; padding: 12px 0; border-top: 1px solid #eff1ed; }
+.glossary-entry dt { color: #364332; font-size: 10px; font-weight: 700; line-height: 1.6; }
+.glossary-entry dd { margin: 5px 0 0; color: #727c6e; font-size: 9px; line-height: 1.75; white-space: pre-line; }
+.glossary-empty { padding: 28px 15px; border: 1px solid #e6eae2; border-radius: 5px; background: #fff; color: #858e80; text-align: center; font-size: 10px; }
 .terms-progress-meta { margin-top: 18px; }
 .terms-progress-meta b { margin: 0 2px; }
 .terms-question-card { min-height: 0; margin-top: 20px; }
@@ -299,6 +330,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
   .question-index { grid-template-columns: repeat(5,minmax(0,1fr)); }
   .dashboard-grid { grid-template-columns: 1fr; }
   .dashboard-card { padding: 15px; }
+  .glossary-tools { display: grid; }
+  .glossary-search { width: min(100%, 360px); }
   .desktop-only { display: none; }
 }
 @media (max-width: 600px) {
@@ -332,6 +365,18 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
   .section-heading { min-height: 0; margin-bottom: 14px; align-items: flex-start; }
   .section-heading h2 { margin-top: 8px; font-size: 20px; }
   .section-description { max-width: 270px; font-size: 9px; }
+  .term-view-tabs { margin: 14px 0 16px; }
+  .term-view-tab { min-height: 34px; font-size: 9px; }
+  .term-category-filters { flex-wrap: nowrap; overflow-x: auto; padding: 1px 1px 5px; scrollbar-width: thin; }
+  .term-category-filter { min-height: 28px; padding: 0 8px; font-size: 8px; }
+  .glossary-search { width: 100%; }
+  .glossary-summary { margin-top: 14px; }
+  .glossary-category-group > summary { min-height: 49px; padding: 10px 12px; }
+  .glossary-category-name b { font-size: 10px; }
+  .glossary-terms { grid-template-columns: 1fr; padding: 0 12px 9px; }
+  .glossary-entry { padding: 10px 0; }
+  .glossary-entry dt { font-size: 9px; }
+  .glossary-entry dd { font-size: 8px; }
   .section-kicker { font-size: 8px; }
   .progress-ring { width: 46px; height: 46px; }
   .progress-ring > span { font-size: 11px; }
