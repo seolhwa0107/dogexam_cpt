@@ -15,9 +15,14 @@ const OFFICIAL_EXAM_QUESTION_COUNT = 50;
 const OFFICIAL_EXAM_DURATION_SECONDS = 60 * 60;
 const STORAGE_KEY = "dogexam-cpt-progress-v1";
 const EXAM_HISTORY_KEY = "dogexam-cpt-exam-history-v1";
-const DATA_VERSION = "2026-11-06-2";
+const TERMS_PROGRESS_KEY = "dogexam-cpt-terms-progress-v1";
+const DATA_VERSION = "2026-11-10-1";
 const state = {
   chapters: new Map(),
+  terms: [],
+  termsLoaded: false,
+  termsError: false,
+  termsProgress: readTermsProgress(),
   answers: readProgress(),
   examHistory: readExamHistory(),
   activeChapter: 1,
@@ -25,6 +30,17 @@ const state = {
   mode: "practice",
   attempt: null
 };
+
+function readTermsProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(TERMS_PROGRESS_KEY) || "{}");
+    return saved && typeof saved === "object" ? saved : {};
+  } catch { return {}; }
+}
+function saveTermsProgress() {
+  try { localStorage.setItem(TERMS_PROGRESS_KEY, JSON.stringify(state.termsProgress)); }
+  catch { /* Keep the quiz usable when browser storage is unavailable. */ }
+}
 
 function readProgress() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
@@ -124,8 +140,11 @@ function setMode(mode) {
   });
   document.getElementById("practicePanel").classList.toggle("hidden", mode !== "practice");
   document.getElementById("mockPanel").classList.toggle("hidden", mode !== "mock");
+  document.getElementById("termsPanel").classList.toggle("hidden", mode !== "terms");
   document.getElementById("dashboardPanel").classList.toggle("hidden", mode !== "dashboard");
+  document.querySelector(".workspace").classList.toggle("is-terms-mode", mode === "terms");
   if (mode === "mock") renderMockAvailability();
+  if (mode === "terms") renderTermsQuiz();
   if (mode === "dashboard") renderDashboard();
 }
 function renderChapters() {
@@ -276,6 +295,100 @@ function shuffle(items) {
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
+}
+function termById(id) { return state.terms.find(function (term) { return term.id === id; }) || null; }
+function initTerms(data) {
+  state.terms = Array.isArray(data) ? data.filter(function (term) {
+    return term && typeof term.id === "string" && typeof term.term === "string" && term.term.trim() && typeof term.defn === "string" && term.defn.trim();
+  }) : [];
+  const validIds = new Set(state.terms.map(function (term) { return term.id; }));
+  const saved = state.termsProgress || {};
+  const previousOrder = Array.isArray(saved.order) ? Array.from(new Set(saved.order.filter(function (id) { return validIds.has(id); }))) : [];
+  const missingIds = state.terms.map(function (term) { return term.id; }).filter(function (id) { return !previousOrder.includes(id); });
+  const answers = saved.answers && typeof saved.answers === "object" ? saved.answers : {};
+  const choices = saved.choices && typeof saved.choices === "object" ? saved.choices : {};
+  state.termsProgress = {
+    order: previousOrder.length ? previousOrder.concat(shuffle(missingIds)) : shuffle(state.terms.map(function (term) { return term.id; })),
+    cursor: Math.max(0, Math.min(Number(saved.cursor) || 0, state.terms.length)),
+    answers: Object.fromEntries(Object.entries(answers).filter(function (entry) { return validIds.has(entry[0]) && typeof entry[1] === "string"; })),
+    choices: Object.fromEntries(Object.entries(choices).filter(function (entry) { return validIds.has(entry[0]) && Array.isArray(entry[1]); }))
+  };
+  saveTermsProgress();
+}
+function termChoicesFor(question) {
+  const saved = state.termsProgress.choices[question.id];
+  const validSaved = Array.isArray(saved) && saved.length === 5 && new Set(saved).size === 5 && saved.includes(question.term) && saved.every(function (term) { return state.terms.some(function (entry) { return entry.term === term; }); });
+  if (validSaved) return saved;
+  const distractors = Array.from(new Set(state.terms.map(function (entry) { return entry.term; }))).filter(function (term) { return term !== question.term; });
+  const choices = shuffle([question.term].concat(shuffle(distractors).slice(0, 4)));
+  state.termsProgress.choices[question.id] = choices;
+  saveTermsProgress();
+  return choices;
+}
+function renderTermsQuiz() {
+  const progress = state.termsProgress || {};
+  if (!Array.isArray(progress.order)) progress.order = [];
+  if (!progress.answers || typeof progress.answers !== "object") progress.answers = {};
+  if (!progress.choices || typeof progress.choices !== "object") progress.choices = {};
+  state.termsProgress = progress;
+  const total = progress.order.length;
+  const completed = progress.cursor >= total && total > 0;
+  const validAnswers = Object.entries(progress.answers).filter(function (entry) { return progress.order.includes(entry[0]); });
+  const correctCount = validAnswers.filter(function (entry) { const term = termById(entry[0]); return term && entry[1] === term.term; }).length;
+  document.getElementById("termsCountBadge").textContent = state.terms.length;
+  document.getElementById("termsLoading").classList.toggle("hidden", state.termsLoaded || state.termsError);
+  document.getElementById("termsError").classList.toggle("hidden", !state.termsError);
+  document.getElementById("termsTotal").textContent = state.terms.length;
+  document.getElementById("termsSolved").textContent = validAnswers.length;
+  document.getElementById("termsCorrect").textContent = correctCount;
+  document.getElementById("termsProgressBar").style.width = (total ? validAnswers.length * 100 / total : 0) + "%";
+  document.getElementById("termsQuiz").classList.toggle("hidden", !state.termsLoaded || !state.terms.length || completed);
+  const completePanel = document.getElementById("termsComplete");
+  completePanel.classList.toggle("hidden", !state.termsLoaded || !completed);
+  if (!state.termsLoaded || !state.terms.length) return;
+  if (completed) {
+    const accuracy = total ? Math.round(correctCount * 100 / total) : 0;
+    completePanel.innerHTML = '<div class="result-score"><b>' + correctCount + '</b><span>/ ' + total + '개 정답 · 정답률 ' + accuracy + '%</span></div><div class="result-verdict">용어 퀴즈를 모두 풀었어요.</div><p class="terms-complete-copy">틀린 용어는 다시 섞어 풀면서 익힐 수 있어요.</p><div class="result-actions"><button type="button" id="restartTermsResult" class="submit-button">다시 풀기 · 순서 섞기 ↻</button></div>';
+    document.getElementById("restartTermsResult").addEventListener("click", function () { restartTermsQuiz(false); });
+    return;
+  }
+  const question = termById(progress.order[progress.cursor]);
+  if (!question) return;
+  const selectedTerm = progress.answers[question.id];
+  const answered = typeof selectedTerm === "string";
+  const choices = termChoicesFor(question);
+  document.getElementById("termQuestionNumber").textContent = "TERM " + String(progress.cursor + 1).padStart(3, "0");
+  document.getElementById("termQuestionStatus").textContent = answered ? (selectedTerm === question.term ? "정답" : "오답") : "선택 전";
+  document.getElementById("termQuestionStatus").classList.toggle("incomplete", !answered);
+  document.getElementById("termPrompt").textContent = question.defn;
+  document.getElementById("termPosition").textContent = (progress.cursor + 1) + " / " + total;
+  const feedback = document.getElementById("termFeedback");
+  feedback.className = "answer-feedback";
+  feedback.textContent = "";
+  if (answered) {
+    const isCorrect = selectedTerm === question.term;
+    feedback.classList.add(isCorrect ? "is-correct" : "is-wrong");
+    feedback.textContent = isCorrect ? "정답이에요! 잘 익혔어요." : "아쉬워요. 정답은 " + question.term + "입니다.";
+  }
+  const labels = ["①", "②", "③", "④", "⑤"];
+  document.getElementById("termChoiceList").innerHTML = choices.map(function (term, index) {
+    const correct = answered && term === question.term;
+    const wrong = answered && term === selectedTerm && !correct;
+    const classes = ["choice-button", "term-choice-button"];
+    if (answered && term === selectedTerm) classes.push("is-selected");
+    if (correct) classes.push("is-correct");
+    if (wrong) classes.push("is-wrong");
+    return '<button type="button" class="' + classes.join(" ") + '" data-term-choice-index="' + index + '" ' + (answered ? "disabled" : "") + '><span class="choice-label">' + labels[index] + '</span><span>' + escapeHTML(term) + '</span></button>';
+  }).join("");
+  document.getElementById("termPrev").disabled = progress.cursor <= 0;
+  document.getElementById("termNext").disabled = !answered;
+  document.getElementById("termNext").innerHTML = progress.cursor === total - 1 ? "결과 보기 ↗" : "<span>다음 문제</span> →";
+}
+function restartTermsQuiz(confirmReset) {
+  if (confirmReset && !window.confirm("용어 퀴즈 진도를 초기화하고 문제 순서를 다시 섞을까요?")) return;
+  state.termsProgress = { order: shuffle(state.terms.map(function (term) { return term.id; })), cursor: 0, answers: {}, choices: {} };
+  saveTermsProgress();
+  renderTermsQuiz();
 }
 function subjectPool(subject) {
   return subject.chapters.flatMap(function (number) {
@@ -614,8 +727,50 @@ async function loadChapters() {
   renderPractice();
   renderMockAvailability();
 }
+async function loadTerms() {
+  try {
+    const response = await fetch("./data/terms.json?v=" + DATA_VERSION);
+    if (!response.ok) throw new Error("Term data request failed");
+    initTerms(await response.json());
+    state.termsError = state.terms.length === 0;
+  } catch (error) {
+    state.terms = [];
+    state.termsError = true;
+    console.info("Trimming term data is not available yet.");
+  }
+  state.termsLoaded = true;
+  renderTermsQuiz();
+}
 
 document.querySelectorAll("[data-mode]").forEach(function (button) { button.addEventListener("click", function () { setMode(button.dataset.mode); }); });
+document.getElementById("termChoiceList").addEventListener("click", function (event) {
+  const button = event.target.closest("[data-term-choice-index]");
+  if (!button || !state.termsLoaded) return;
+  const progress = state.termsProgress;
+  const question = termById(progress.order[progress.cursor]);
+  if (!question || progress.answers[question.id] !== undefined) return;
+  const choices = termChoicesFor(question);
+  const selected = choices[Number(button.dataset.termChoiceIndex)];
+  if (typeof selected !== "string") return;
+  progress.answers[question.id] = selected;
+  saveTermsProgress();
+  renderTermsQuiz();
+});
+document.getElementById("termPrev").addEventListener("click", function () {
+  if (state.termsProgress.cursor <= 0) return;
+  state.termsProgress.cursor -= 1;
+  saveTermsProgress();
+  renderTermsQuiz();
+});
+document.getElementById("termNext").addEventListener("click", function () {
+  const progress = state.termsProgress;
+  const id = progress.order[progress.cursor];
+  if (!id || progress.answers[id] === undefined) return;
+  progress.cursor = Math.min(progress.order.length, progress.cursor + 1);
+  saveTermsProgress();
+  renderTermsQuiz();
+});
+document.getElementById("restartTerms").addEventListener("click", function () { restartTermsQuiz(true); });
 document.getElementById("prevQuestion").addEventListener("click", function () { state.activeIndex = Math.max(0, state.activeIndex - 1); renderPractice(); });
 document.getElementById("nextQuestion").addEventListener("click", function () { state.activeIndex = Math.min(currentQuestions().length - 1, state.activeIndex + 1); renderPractice(); });
 document.getElementById("resetChapter").addEventListener("click", function () {
@@ -655,3 +810,4 @@ document.getElementById("unansweredDialog").addEventListener("click", function (
 });
 showFilePreviewNotice();
 loadChapters();
+loadTerms();
