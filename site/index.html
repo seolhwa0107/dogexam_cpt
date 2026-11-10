@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261110-4" />
+    <link rel="stylesheet" href="./styles.css?v=20261110-5" />
   </head>
   <body>
     <div class="page-shell">
@@ -21,6 +21,7 @@
         <nav class="top-nav" aria-label="주요 메뉴">
           <button class="nav-button is-active" type="button" data-mode="practice">문제 풀이</button>
           <button class="nav-button" type="button" data-mode="mock">모의시험</button>
+          <button class="nav-button" type="button" data-mode="terms">트리밍 용어</button>
           <button class="nav-button" type="button" data-mode="dashboard">성적 대시보드</button>
         </nav>
         <div class="topbar-meta"><span class="live-dot"></span><span>3급 필기 준비</span></div>
@@ -44,6 +45,7 @@
         <div class="mode-tabs mobile-tabs" role="tablist" aria-label="학습 모드">
           <button type="button" class="mode-tab is-active" role="tab" aria-selected="true" data-mode="practice">문제 풀이</button>
           <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="mock">모의시험</button>
+          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="terms">용어 퀴즈</button>
           <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="dashboard">성적 현황</button>
         </div>
 
@@ -110,6 +112,29 @@
               <div id="mockResult" class="mock-result hidden"></div>
             </section>
 
+            <section id="termsPanel" class="panel-view terms-panel hidden">
+              <div class="section-heading terms-heading">
+                <div><div class="section-kicker"><span class="section-bar"></span> TRIMMING TERMS</div><h2>설명으로 미용 용어를 익혀요.</h2><p class="section-description">설명을 읽고 맞는 용어를 5개 보기에서 고르세요. 373개 용어를 무작위 순서로 한 번씩 풉니다.</p></div>
+                <div class="mock-emblem terms-emblem" aria-label="373개 용어"><span id="termsCountBadge">373</span><small>TERMS</small></div>
+              </div>
+              <div id="termsLoading" class="availability-card hidden" role="status"><span class="availability-icon">⌁</span><div class="availability-copy"><b>용어를 불러오고 있어요.</b><p>잠시만 기다려 주세요.</p></div></div>
+              <div id="termsError" class="availability-card hidden" role="status"><span class="availability-icon">⌁</span><div class="availability-copy"><b>용어 자료를 불러오지 못했어요.</b><p>잠시 후 다시 접속해 주세요.</p></div></div>
+              <div id="termsQuiz" class="terms-quiz hidden">
+                <div class="progress-meta terms-progress-meta"><span><b id="termsSolved">0</b> / <span id="termsTotal">373</span>개 풀이 · 정답 <b id="termsCorrect">0</b></span><button type="button" id="restartTerms" class="text-button">처음부터 다시 섞기 <span>↺</span></button></div>
+                <div class="progress-track"><span id="termsProgressBar"></span></div>
+                <article class="question-card terms-question-card">
+                  <div class="question-meta"><span id="termQuestionNumber" class="question-number">TERM 001</span><span id="termQuestionStatus" class="status-pill">선택 전</span></div>
+                  <h3 id="termPrompt" class="question-prompt"></h3>
+                  <p class="term-question-ask">이 설명에 해당하는 용어는?</p>
+                  <div id="termChoiceList" class="choice-list"></div>
+                  <div id="termFeedback" class="answer-feedback" role="status" aria-live="polite"></div>
+                  <div class="question-actions"><button type="button" id="termPrev" class="outline-button">← <span>이전</span></button><span id="termPosition" class="position-label">1 / 373</span><button type="button" id="termNext" class="solid-button" disabled><span>다음 문제</span> →</button></div>
+                </article>
+              </div>
+              <div id="termsComplete" class="mock-result hidden"></div>
+              <p class="local-note"><span aria-hidden="true">◉</span> 용어 퀴즈 진도와 답은 이 브라우저에 저장됩니다.</p>
+            </section>
+
             <section id="dashboardPanel" class="panel-view dashboard-panel hidden">
               <div class="section-heading dashboard-heading">
                 <div><div class="section-kicker"><span class="section-bar"></span> MY RECORD</div><h2>성적과 약점을 확인해요.</h2><p class="section-description">채점한 모의고사 기록을 모아 취약한 챕터를 보여드려요.</p></div>
@@ -147,6 +172,6 @@
 
       <footer class="footer"><a class="footer-brand" href="#top">DOG<span>CPT</span></a><span>반려견스타일리스트 3급 필기 연습</span><span class="footer-right">BUILD YOUR CONFIDENCE <i>✳</i></span></footer>
     </div>
-    <script src="./app.js?v=20261110-4" defer></script>
+    <script src="./app.js?v=20261110-5" defer></script>
   </body>
 </html>
