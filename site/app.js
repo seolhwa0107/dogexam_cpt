@@ -17,6 +17,19 @@ const STORAGE_KEY = "dogexam-cpt-progress-v1";
 const EXAM_HISTORY_KEY = "dogexam-cpt-exam-history-v1";
 const TERMS_PROGRESS_KEY = "dogexam-cpt-terms-progress-v1";
 const DATA_VERSION = "2026-11-10-1";
+const TERM_CATEGORIES = [
+  { key: "trim", title: "트리밍" },
+  { key: "coat", title: "피모" },
+  { key: "color", title: "모색" },
+  { key: "head", title: "머리" },
+  { key: "eye", title: "눈" },
+  { key: "mouth", title: "입" },
+  { key: "nose", title: "코" },
+  { key: "ear", title: "귀" },
+  { key: "body", title: "몸통·체형" },
+  { key: "leg", title: "다리" },
+  { key: "tail", title: "꼬리" }
+];
 const state = {
   chapters: new Map(),
   terms: [],
@@ -28,6 +41,9 @@ const state = {
   activeChapter: 1,
   activeIndex: 0,
   mode: "practice",
+  termView: "glossary",
+  termCategory: "all",
+  termSearch: "",
   attempt: null
 };
 
@@ -144,7 +160,7 @@ function setMode(mode) {
   document.getElementById("dashboardPanel").classList.toggle("hidden", mode !== "dashboard");
   document.querySelector(".workspace").classList.toggle("is-terms-mode", mode === "terms");
   if (mode === "mock") renderMockAvailability();
-  if (mode === "terms") renderTermsQuiz();
+  if (mode === "terms") renderTermsSection();
   if (mode === "dashboard") renderDashboard();
 }
 function renderChapters() {
@@ -297,6 +313,10 @@ function shuffle(items) {
   return copy;
 }
 function termById(id) { return state.terms.find(function (term) { return term.id === id; }) || null; }
+function termCategoryTitle(key) {
+  const category = TERM_CATEGORIES.find(function (entry) { return entry.key === key; });
+  return category ? category.title : key || "기타";
+}
 function initTerms(data) {
   state.terms = Array.isArray(data) ? data.filter(function (term) {
     return term && typeof term.id === "string" && typeof term.term === "string" && term.term.trim() && typeof term.defn === "string" && term.defn.trim();
@@ -314,6 +334,69 @@ function initTerms(data) {
     choices: Object.fromEntries(Object.entries(choices).filter(function (entry) { return validIds.has(entry[0]) && Array.isArray(entry[1]); }))
   };
   saveTermsProgress();
+}
+function renderTermsSection() {
+  const loading = document.getElementById("termsLoading");
+  const error = document.getElementById("termsError");
+  const glossary = document.getElementById("termsGlossary");
+  const quiz = document.getElementById("termsQuiz");
+  const complete = document.getElementById("termsComplete");
+  const ready = state.termsLoaded && state.terms.length > 0 && !state.termsError;
+  const showingGlossary = state.termView === "glossary";
+  document.querySelectorAll("[data-term-view]").forEach(function (button) {
+    const active = button.dataset.termView === state.termView;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  loading.classList.toggle("hidden", state.termsLoaded || state.termsError);
+  error.classList.toggle("hidden", !state.termsError);
+  glossary.classList.toggle("hidden", !ready || !showingGlossary);
+  quiz.classList.toggle("hidden", !ready || showingGlossary);
+  if (!ready || showingGlossary) complete.classList.add("hidden");
+  if (!ready) return;
+  if (showingGlossary) renderGlossary();
+  else renderTermsQuiz();
+}
+function renderGlossary() {
+  const categoryCounts = new Map();
+  state.terms.forEach(function (term) {
+    const key = term.cat || "other";
+    categoryCounts.set(key, (categoryCounts.get(key) || 0) + 1);
+  });
+  const categories = TERM_CATEGORIES.filter(function (category) { return categoryCounts.has(category.key); });
+  categoryCounts.forEach(function (_count, key) {
+    if (!categories.some(function (category) { return category.key === key; })) categories.push({ key: key, title: termCategoryTitle(key) });
+  });
+  const filterMarkup = [{ key: "all", title: "전체", count: state.terms.length }].concat(categories.map(function (category) {
+    return { key: category.key, title: category.title, count: categoryCounts.get(category.key) };
+  })).map(function (category) {
+    const active = state.termCategory === category.key;
+    return '<button type="button" class="term-category-filter' + (active ? " is-active" : "") + '" data-term-category="' + escapeHTML(category.key) + '" aria-pressed="' + String(active) + '"><span>' + escapeHTML(category.title) + '</span><small>' + category.count + '</small></button>';
+  }).join("");
+  document.getElementById("termCategoryFilters").innerHTML = filterMarkup;
+  const query = state.termSearch.trim().toLocaleLowerCase("ko");
+  const matches = state.terms.filter(function (term) {
+    const categoryMatches = state.termCategory === "all" || (term.cat || "other") === state.termCategory;
+    const textMatches = !query || (term.term + " " + term.defn).toLocaleLowerCase("ko").includes(query);
+    return categoryMatches && textMatches;
+  });
+  const summary = document.getElementById("glossarySummary");
+  const selectedTitle = state.termCategory === "all" ? "전체 카테고리" : termCategoryTitle(state.termCategory);
+  summary.textContent = query ? selectedTitle + "에서 '" + state.termSearch.trim() + "' 검색 결과 " + matches.length + "개" : selectedTitle + " · " + matches.length + "개 용어";
+  const list = document.getElementById("glossaryList");
+  if (!matches.length) {
+    list.innerHTML = '<div class="glossary-empty">검색 결과가 없어요. 다른 용어나 설명으로 찾아보세요.</div>';
+    return;
+  }
+  const groups = categories.map(function (category) {
+    return { category: category, terms: matches.filter(function (term) { return (term.cat || "other") === category.key; }) };
+  }).filter(function (group) { return group.terms.length > 0; });
+  list.innerHTML = groups.map(function (group, index) {
+    const expanded = Boolean(query) || state.termCategory !== "all" || index === 0;
+    return '<details class="glossary-category-group" ' + (expanded ? "open" : "") + '><summary><span class="glossary-category-name"><b>' + escapeHTML(group.category.title) + '</b><small>' + group.terms.length + '개 용어</small></span><span class="glossary-category-toggle" aria-hidden="true"></span></summary><dl class="glossary-terms">' + group.terms.map(function (term) {
+      return '<div class="glossary-entry"><dt>' + escapeHTML(term.term) + '</dt><dd>' + escapeHTML(term.defn) + '</dd></div>';
+    }).join("") + '</dl></details>';
+  }).join("");
 }
 function termChoicesFor(question) {
   const saved = state.termsProgress.choices[question.id];
@@ -342,9 +425,9 @@ function renderTermsQuiz() {
   document.getElementById("termsSolved").textContent = validAnswers.length;
   document.getElementById("termsCorrect").textContent = correctCount;
   document.getElementById("termsProgressBar").style.width = (total ? validAnswers.length * 100 / total : 0) + "%";
-  document.getElementById("termsQuiz").classList.toggle("hidden", !state.termsLoaded || !state.terms.length || completed);
+  document.getElementById("termsQuiz").classList.toggle("hidden", !state.termsLoaded || !state.terms.length || completed || state.termView !== "quiz");
   const completePanel = document.getElementById("termsComplete");
-  completePanel.classList.toggle("hidden", !state.termsLoaded || !completed);
+  completePanel.classList.toggle("hidden", !state.termsLoaded || !completed || state.termView !== "quiz");
   if (!state.termsLoaded || !state.terms.length) return;
   if (completed) {
     const accuracy = total ? Math.round(correctCount * 100 / total) : 0;
@@ -739,10 +822,26 @@ async function loadTerms() {
     console.info("Trimming term data is not available yet.");
   }
   state.termsLoaded = true;
-  renderTermsQuiz();
+  renderTermsSection();
 }
 
 document.querySelectorAll("[data-mode]").forEach(function (button) { button.addEventListener("click", function () { setMode(button.dataset.mode); }); });
+document.querySelectorAll("[data-term-view]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    state.termView = button.dataset.termView === "quiz" ? "quiz" : "glossary";
+    renderTermsSection();
+  });
+});
+document.getElementById("termCategoryFilters").addEventListener("click", function (event) {
+  const button = event.target.closest("[data-term-category]");
+  if (!button) return;
+  state.termCategory = button.dataset.termCategory;
+  renderGlossary();
+});
+document.getElementById("termSearch").addEventListener("input", function (event) {
+  state.termSearch = event.target.value;
+  renderGlossary();
+});
 document.getElementById("termChoiceList").addEventListener("click", function (event) {
   const button = event.target.closest("[data-term-choice-index]");
   if (!button || !state.termsLoaded) return;
