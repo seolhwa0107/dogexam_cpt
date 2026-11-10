@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261110-5" />
+    <link rel="stylesheet" href="./styles.css?v=20261110-6" />
   </head>
   <body>
     <div class="page-shell">
@@ -45,7 +45,7 @@
         <div class="mode-tabs mobile-tabs" role="tablist" aria-label="학습 모드">
           <button type="button" class="mode-tab is-active" role="tab" aria-selected="true" data-mode="practice">문제 풀이</button>
           <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="mock">모의시험</button>
-          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="terms">용어 퀴즈</button>
+          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="terms">트리밍 용어</button>
           <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="dashboard">성적 현황</button>
         </div>
 
@@ -114,11 +114,23 @@
 
             <section id="termsPanel" class="panel-view terms-panel hidden">
               <div class="section-heading terms-heading">
-                <div><div class="section-kicker"><span class="section-bar"></span> TRIMMING TERMS</div><h2>설명으로 미용 용어를 익혀요.</h2><p class="section-description">설명을 읽고 맞는 용어를 5개 보기에서 고르세요. 373개 용어를 무작위 순서로 한 번씩 풉니다.</p></div>
+                <div><div class="section-kicker"><span class="section-bar"></span> TRIMMING TERMS</div><h2>미용 용어 설명과 문제 풀이</h2><p class="section-description">373개 용어를 카테고리별로 살펴보고 5지선다 문제로 복습하세요.</p></div>
                 <div class="mock-emblem terms-emblem" aria-label="373개 용어"><span id="termsCountBadge">373</span><small>TERMS</small></div>
+              </div>
+              <div class="term-view-tabs" role="tablist" aria-label="트리밍 용어 학습 방식">
+                <button type="button" class="term-view-tab is-active" role="tab" aria-selected="true" aria-controls="termsGlossary" data-term-view="glossary">용어 설명</button>
+                <button type="button" class="term-view-tab" role="tab" aria-selected="false" aria-controls="termsQuiz" data-term-view="quiz">문제 풀이</button>
               </div>
               <div id="termsLoading" class="availability-card hidden" role="status"><span class="availability-icon">⌁</span><div class="availability-copy"><b>용어를 불러오고 있어요.</b><p>잠시만 기다려 주세요.</p></div></div>
               <div id="termsError" class="availability-card hidden" role="status"><span class="availability-icon">⌁</span><div class="availability-copy"><b>용어 자료를 불러오지 못했어요.</b><p>잠시 후 다시 접속해 주세요.</p></div></div>
+              <section id="termsGlossary" class="terms-glossary hidden" aria-label="카테고리별 용어 설명">
+                <div class="glossary-tools">
+                  <div id="termCategoryFilters" class="term-category-filters" role="group" aria-label="용어 카테고리"></div>
+                  <label class="glossary-search"><span>용어 찾기</span><input id="termSearch" type="search" placeholder="용어 또는 설명 검색" autocomplete="off" /></label>
+                </div>
+                <p id="glossarySummary" class="glossary-summary"></p>
+                <div id="glossaryList" class="glossary-list"></div>
+              </section>
               <div id="termsQuiz" class="terms-quiz hidden">
                 <div class="progress-meta terms-progress-meta"><span><b id="termsSolved">0</b> / <span id="termsTotal">373</span>개 풀이 · 정답 <b id="termsCorrect">0</b></span><button type="button" id="restartTerms" class="text-button">처음부터 다시 섞기 <span>↺</span></button></div>
                 <div class="progress-track"><span id="termsProgressBar"></span></div>
@@ -172,6 +184,6 @@
 
       <footer class="footer"><a class="footer-brand" href="#top">DOG<span>CPT</span></a><span>반려견스타일리스트 3급 필기 연습</span><span class="footer-right">BUILD YOUR CONFIDENCE <i>✳</i></span></footer>
     </div>
-    <script src="./app.js?v=20261110-5" defer></script>
+    <script src="./app.js?v=20261110-6" defer></script>
   </body>
 </html>
