@@ -1,4 +1,4 @@
-# dogexam_cpt
+# dogexam_cbt
 
 반려견스타일리스트 3급 필기 문제 풀이 사이트입니다. 정적 HTML/CSS/JavaScript로 만들었으며 GitHub Pages에 배포합니다.
 
