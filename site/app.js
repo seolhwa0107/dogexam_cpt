@@ -150,6 +150,7 @@ function answerCount(number) {
 }
 function setMode(mode) {
   state.mode = mode;
+  document.body.dataset.mode = mode;
   document.querySelectorAll("[data-mode]").forEach(function (button) {
     button.classList.toggle("is-active", button.dataset.mode === mode);
     if (button.hasAttribute("aria-selected")) button.setAttribute("aria-selected", String(button.dataset.mode === mode));
