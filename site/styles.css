@@ -57,6 +57,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
 .orbit-one { width: 370px; height: 370px; right: 205px; top: -150px; }
 .orbit-two { width: 285px; height: 285px; right: 247px; top: -108px; }
 .workspace { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 46px; align-items: start; margin-bottom: 55px; }
+.workspace.is-terms-mode { grid-template-columns: minmax(0, 1fr); }
+.workspace.is-terms-mode .chapter-rail { display: none; }
 .chapter-rail { padding: 10px 0; }
 .rail-heading { display: flex; justify-content: space-between; align-items: center; color: #7a8375; font-size: 9px; }
 .rail-count { color: #a0a79b; }
@@ -145,6 +147,14 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
 .local-note span { margin-right: 5px; color: #8ca766; }
 .mobile-tabs { display: none; }
 .hidden { display: none !important; }
+.terms-heading { margin-bottom: 18px; }
+.terms-emblem span { font-size: 18px; }
+.terms-progress-meta { margin-top: 18px; }
+.terms-progress-meta b { margin: 0 2px; }
+.terms-question-card { min-height: 0; margin-top: 20px; }
+.term-question-ask { margin: -9px 0 16px; color: #879080; font-size: 10px; }
+.term-choice-button { align-items: center; }
+.terms-complete-copy { margin: 8px 0 0; color: #7d8775; font-size: 10px; line-height: 1.7; }
 .mock-heading { margin-bottom: 20px; }
 .exam-source-link { margin-left: 5px; color: #536b42; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 .mock-emblem { width: 78px; height: 78px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none; border-radius: 50%; background: #e8f0dd; color: #314b27; }
@@ -309,8 +319,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
   .hero-note strong { font-size: 10px; }
   .orbit-one { right: -184px; top: -115px; }
   .orbit-two { right: -145px; top: -70px; }
-  .mobile-tabs { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 4px; padding: 4px; margin-bottom: 22px; border: 1px solid #e5e9e0; border-radius: 5px; background: #ecefe8; }
-  .mode-tab { min-height: 35px; padding: 0 2px; border: 0; border-radius: 3px; background: transparent; color: #81897c; font-size: 9px; cursor: pointer; }
+  .mobile-tabs { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 4px; padding: 4px; margin-bottom: 22px; border: 1px solid #e5e9e0; border-radius: 5px; background: #ecefe8; }
+  .mode-tab { min-height: 35px; padding: 0 2px; border: 0; border-radius: 3px; background: transparent; color: #81897c; font-size: 8px; cursor: pointer; }
   .mode-tab.is-active { background: #fff; color: #354430; box-shadow: 0 1px 4px rgba(30,45,26,.08); font-weight: 700; }
   .workspace { gap: 21px; margin-bottom: 35px; }
   .rail-heading { font-size: 8px; }
