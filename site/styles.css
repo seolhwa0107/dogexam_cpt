@@ -594,4 +594,12 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
   .modal-actions button { min-height: 46px; border-radius: 9px; font-size: 12px; }
   .footer { min-height: 54px; gap: 8px; font-size: 9px; }
   .footer-right { display: none; }
+  body[data-mode="mock"] .hero,
+  body[data-mode="terms"] .hero,
+  body[data-mode="dashboard"] .hero { display: none; }
+  body[data-mode="mock"] .chapter-rail,
+  body[data-mode="dashboard"] .chapter-rail { display: none; }
+  body[data-mode="mock"] .workspace,
+  body[data-mode="terms"] .workspace,
+  body[data-mode="dashboard"] .workspace { margin-top: 15px; }
 }
