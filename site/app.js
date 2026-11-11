@@ -16,20 +16,13 @@ const OFFICIAL_EXAM_DURATION_SECONDS = 60 * 60;
 const STORAGE_KEY = "dogexam-cpt-progress-v1";
 const EXAM_HISTORY_KEY = "dogexam-cpt-exam-history-v1";
 const TERMS_PROGRESS_KEY = "dogexam-cpt-terms-progress-v1";
-const DATA_VERSION = "2026-11-10-1";
+const DATA_VERSION = "2026-11-11-1";
 const TERM_CATEGORIES = [
   { key: "trim", title: "트리밍" },
   { key: "coat", title: "피모" },
-  { key: "color", title: "모색" },
-  { key: "head", title: "머리" },
-  { key: "eye", title: "눈" },
-  { key: "mouth", title: "입" },
-  { key: "nose", title: "코" },
-  { key: "ear", title: "귀" },
-  { key: "body", title: "몸통·체형" },
-  { key: "leg", title: "다리" },
-  { key: "tail", title: "꼬리" }
+  { key: "body", title: "몸통·체형" }
 ];
+const LEVEL3_TERM_CATEGORY_KEYS = new Set(TERM_CATEGORIES.map(function (category) { return category.key; }));
 const state = {
   chapters: new Map(),
   terms: [],
@@ -314,6 +307,9 @@ function shuffle(items) {
   return copy;
 }
 function termById(id) { return state.terms.find(function (term) { return term.id === id; }) || null; }
+function level3Terms() {
+  return state.terms.filter(function (term) { return LEVEL3_TERM_CATEGORY_KEYS.has(term.cat); });
+}
 function termCategoryTitle(key) {
   const category = TERM_CATEGORIES.find(function (entry) { return entry.key === key; });
   return category ? category.title : key || "기타";
@@ -323,14 +319,18 @@ function initTerms(data) {
     return term && typeof term.id === "string" && typeof term.term === "string" && term.term.trim() && typeof term.defn === "string" && term.defn.trim();
   }) : [];
   const validIds = new Set(state.terms.map(function (term) { return term.id; }));
+  const eligibleTerms = level3Terms();
+  const eligibleIds = new Set(eligibleTerms.map(function (term) { return term.id; }));
   const saved = state.termsProgress || {};
-  const previousOrder = Array.isArray(saved.order) ? Array.from(new Set(saved.order.filter(function (id) { return validIds.has(id); }))) : [];
-  const missingIds = state.terms.map(function (term) { return term.id; }).filter(function (id) { return !previousOrder.includes(id); });
+  const savedOrder = Array.isArray(saved.order) ? saved.order : [];
+  const previousOrder = Array.from(new Set(savedOrder.filter(function (id) { return eligibleIds.has(id); })));
+  const missingIds = eligibleTerms.map(function (term) { return term.id; }).filter(function (id) { return !previousOrder.includes(id); });
+  const completedBeforeCursor = savedOrder.slice(0, Math.max(0, Number(saved.cursor) || 0)).filter(function (id) { return eligibleIds.has(id); }).length;
   const answers = saved.answers && typeof saved.answers === "object" ? saved.answers : {};
   const choices = saved.choices && typeof saved.choices === "object" ? saved.choices : {};
   state.termsProgress = {
-    order: previousOrder.length ? previousOrder.concat(shuffle(missingIds)) : shuffle(state.terms.map(function (term) { return term.id; })),
-    cursor: Math.max(0, Math.min(Number(saved.cursor) || 0, state.terms.length)),
+    order: previousOrder.length ? previousOrder.concat(shuffle(missingIds)) : shuffle(eligibleTerms.map(function (term) { return term.id; })),
+    cursor: Math.max(0, Math.min(completedBeforeCursor, eligibleTerms.length)),
     answers: Object.fromEntries(Object.entries(answers).filter(function (entry) { return validIds.has(entry[0]) && typeof entry[1] === "string"; })),
     choices: Object.fromEntries(Object.entries(choices).filter(function (entry) { return validIds.has(entry[0]) && Array.isArray(entry[1]); }))
   };
@@ -342,7 +342,7 @@ function renderTermsSection() {
   const glossary = document.getElementById("termsGlossary");
   const quiz = document.getElementById("termsQuiz");
   const complete = document.getElementById("termsComplete");
-  const ready = state.termsLoaded && state.terms.length > 0 && !state.termsError;
+  const ready = state.termsLoaded && level3Terms().length > 0 && !state.termsError;
   const showingGlossary = state.termView === "glossary";
   document.querySelectorAll("[data-term-view]").forEach(function (button) {
     const active = button.dataset.termView === state.termView;
@@ -359,8 +359,11 @@ function renderTermsSection() {
   else renderTermsQuiz();
 }
 function renderGlossary() {
+  const terms = level3Terms();
+  document.getElementById("termsCountBadge").textContent = terms.length;
+  document.querySelector(".terms-emblem").setAttribute("aria-label", terms.length + "개 3급 용어");
   const categoryCounts = new Map();
-  state.terms.forEach(function (term) {
+  terms.forEach(function (term) {
     const key = term.cat || "other";
     categoryCounts.set(key, (categoryCounts.get(key) || 0) + 1);
   });
@@ -368,7 +371,7 @@ function renderGlossary() {
   categoryCounts.forEach(function (_count, key) {
     if (!categories.some(function (category) { return category.key === key; })) categories.push({ key: key, title: termCategoryTitle(key) });
   });
-  const filterMarkup = [{ key: "all", title: "전체", count: state.terms.length }].concat(categories.map(function (category) {
+  const filterMarkup = [{ key: "all", title: "전체", count: terms.length }].concat(categories.map(function (category) {
     return { key: category.key, title: category.title, count: categoryCounts.get(category.key) };
   })).map(function (category) {
     const active = state.termCategory === category.key;
@@ -376,7 +379,7 @@ function renderGlossary() {
   }).join("");
   document.getElementById("termCategoryFilters").innerHTML = filterMarkup;
   const query = state.termSearch.trim().toLocaleLowerCase("ko");
-  const matches = state.terms.filter(function (term) {
+  const matches = terms.filter(function (term) {
     const categoryMatches = state.termCategory === "all" || (term.cat || "other") === state.termCategory;
     const textMatches = !query || (term.term + " " + term.defn).toLocaleLowerCase("ko").includes(query);
     return categoryMatches && textMatches;
@@ -400,16 +403,19 @@ function renderGlossary() {
   }).join("");
 }
 function termChoicesFor(question) {
+  const terms = level3Terms();
   const saved = state.termsProgress.choices[question.id];
-  const validSaved = Array.isArray(saved) && saved.length === 5 && new Set(saved).size === 5 && saved.includes(question.term) && saved.every(function (term) { return state.terms.some(function (entry) { return entry.term === term; }); });
+  const eligibleNames = new Set(terms.map(function (entry) { return entry.term; }));
+  const validSaved = Array.isArray(saved) && saved.length === 5 && new Set(saved).size === 5 && saved.includes(question.term) && saved.every(function (term) { return eligibleNames.has(term); });
   if (validSaved) return saved;
-  const distractors = Array.from(new Set(state.terms.map(function (entry) { return entry.term; }))).filter(function (term) { return term !== question.term; });
+  const distractors = Array.from(eligibleNames).filter(function (term) { return term !== question.term; });
   const choices = shuffle([question.term].concat(shuffle(distractors).slice(0, 4)));
   state.termsProgress.choices[question.id] = choices;
   saveTermsProgress();
   return choices;
 }
 function renderTermsQuiz() {
+  const terms = level3Terms();
   const progress = state.termsProgress || {};
   if (!Array.isArray(progress.order)) progress.order = [];
   if (!progress.answers || typeof progress.answers !== "object") progress.answers = {};
@@ -419,17 +425,18 @@ function renderTermsQuiz() {
   const completed = progress.cursor >= total && total > 0;
   const validAnswers = Object.entries(progress.answers).filter(function (entry) { return progress.order.includes(entry[0]); });
   const correctCount = validAnswers.filter(function (entry) { const term = termById(entry[0]); return term && entry[1] === term.term; }).length;
-  document.getElementById("termsCountBadge").textContent = state.terms.length;
+  document.getElementById("termsCountBadge").textContent = terms.length;
+  document.querySelector(".terms-emblem").setAttribute("aria-label", terms.length + "개 3급 용어");
   document.getElementById("termsLoading").classList.toggle("hidden", state.termsLoaded || state.termsError);
   document.getElementById("termsError").classList.toggle("hidden", !state.termsError);
-  document.getElementById("termsTotal").textContent = state.terms.length;
+  document.getElementById("termsTotal").textContent = terms.length;
   document.getElementById("termsSolved").textContent = validAnswers.length;
   document.getElementById("termsCorrect").textContent = correctCount;
   document.getElementById("termsProgressBar").style.width = (total ? validAnswers.length * 100 / total : 0) + "%";
-  document.getElementById("termsQuiz").classList.toggle("hidden", !state.termsLoaded || !state.terms.length || completed || state.termView !== "quiz");
+  document.getElementById("termsQuiz").classList.toggle("hidden", !state.termsLoaded || !terms.length || completed || state.termView !== "quiz");
   const completePanel = document.getElementById("termsComplete");
   completePanel.classList.toggle("hidden", !state.termsLoaded || !completed || state.termView !== "quiz");
-  if (!state.termsLoaded || !state.terms.length) return;
+  if (!state.termsLoaded || !terms.length) return;
   if (completed) {
     const accuracy = total ? Math.round(correctCount * 100 / total) : 0;
     completePanel.innerHTML = '<div class="result-score"><b>' + correctCount + '</b><span>/ ' + total + '개 정답 · 정답률 ' + accuracy + '%</span></div><div class="result-verdict">용어 퀴즈를 모두 풀었어요.</div><p class="terms-complete-copy">틀린 용어는 다시 섞어 풀면서 익힐 수 있어요.</p><div class="result-actions"><button type="button" id="restartTermsResult" class="submit-button">다시 풀기 · 순서 섞기 ↻</button></div>';
@@ -470,7 +477,7 @@ function renderTermsQuiz() {
 }
 function restartTermsQuiz(confirmReset) {
   if (confirmReset && !window.confirm("용어 퀴즈 진도를 초기화하고 문제 순서를 다시 섞을까요?")) return;
-  state.termsProgress = { order: shuffle(state.terms.map(function (term) { return term.id; })), cursor: 0, answers: {}, choices: {} };
+  state.termsProgress = { order: shuffle(level3Terms().map(function (term) { return term.id; })), cursor: 0, answers: {}, choices: {} };
   saveTermsProgress();
   renderTermsQuiz();
 }
@@ -816,7 +823,7 @@ async function loadTerms() {
     const response = await fetch("./data/terms.json?v=" + DATA_VERSION);
     if (!response.ok) throw new Error("Term data request failed");
     initTerms(await response.json());
-    state.termsError = state.terms.length === 0;
+    state.termsError = level3Terms().length === 0;
   } catch (error) {
     state.terms = [];
     state.termsError = true;
