@@ -144,17 +144,19 @@ function answerCount(number) {
 function setMode(mode) {
   state.mode = mode;
   document.body.dataset.mode = mode;
-  document.querySelectorAll("[data-mode]").forEach(function (button) {
+  document.querySelectorAll("button[data-mode]").forEach(function (button) {
     button.classList.toggle("is-active", button.dataset.mode === mode);
     if (button.hasAttribute("aria-selected")) button.setAttribute("aria-selected", String(button.dataset.mode === mode));
   });
   document.getElementById("practicePanel").classList.toggle("hidden", mode !== "practice");
   document.getElementById("mockPanel").classList.toggle("hidden", mode !== "mock");
   document.getElementById("termsPanel").classList.toggle("hidden", mode !== "terms");
+  document.getElementById("anatomyPanel").classList.toggle("hidden", mode !== "anatomy");
   document.getElementById("dashboardPanel").classList.toggle("hidden", mode !== "dashboard");
-  document.querySelector(".workspace").classList.toggle("is-terms-mode", mode === "terms");
+  document.querySelector(".workspace").classList.toggle("is-terms-mode", mode === "terms" || mode === "anatomy");
   if (mode === "mock") renderMockAvailability();
   if (mode === "terms") renderTermsSection();
+  if (mode === "anatomy" && typeof window.renderAnatomySection === "function") window.renderAnatomySection();
   if (mode === "dashboard") renderDashboard();
 }
 function renderChapters() {
@@ -833,7 +835,7 @@ async function loadTerms() {
   renderTermsSection();
 }
 
-document.querySelectorAll("[data-mode]").forEach(function (button) { button.addEventListener("click", function () { setMode(button.dataset.mode); }); });
+document.querySelectorAll("button[data-mode]").forEach(function (button) { button.addEventListener("click", function () { setMode(button.dataset.mode); }); });
 document.querySelectorAll("[data-term-view]").forEach(function (button) {
   button.addEventListener("click", function () {
     state.termView = button.dataset.termView === "quiz" ? "quiz" : "glossary";

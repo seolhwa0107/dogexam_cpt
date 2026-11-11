@@ -1,0 +1,2494 @@
+{
+  "version": 1,
+  "notice": "그림은 원본을 바탕으로 정리한 참고도이며, 표시 위치와 뼈의 세부 형태는 원본 자료와 함께 확인해 주세요.",
+  "categories": [
+    {
+      "id": "body",
+      "title": "견체 전체",
+      "figures": [
+        {
+          "id": "body-main",
+          "title": "견체 전체",
+          "src": "./images/anatomy/dog-body-cutout.png",
+          "width": 1536,
+          "height": 1024
+        }
+      ],
+      "entries": [
+        {
+          "id": "body-01",
+          "name": "코",
+          "english": "nose",
+          "aliases": [],
+          "description": "주둥이의 맨 앞에 있는 후각 기관입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.047,
+              "y": 0.19
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-02",
+          "name": "주둥이",
+          "english": "muzzle",
+          "aliases": [
+            "머즐"
+          ],
+          "description": "코와 입을 포함하는 얼굴의 앞부분입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.105,
+              "y": 0.216
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-03",
+          "name": "입술",
+          "english": null,
+          "aliases": [],
+          "description": "입 가장자리를 이루는 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.11,
+              "y": 0.265
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-04",
+          "name": "이마 단",
+          "english": "stop",
+          "aliases": [
+            "스톱"
+          ],
+          "description": "이마와 콧등이 만나는 곳의 들어간 부위입니다. 스톱이라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.124,
+              "y": 0.151
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-05",
+          "name": "눈",
+          "english": "eye",
+          "aliases": [],
+          "description": "빛을 감지하는 눈 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.152,
+              "y": 0.125
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-06",
+          "name": "두개부",
+          "english": "skull",
+          "aliases": [],
+          "description": "머리뼈가 있는 머리의 윗부분입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.198,
+              "y": 0.053
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-07",
+          "name": "후두부",
+          "english": "occiput",
+          "aliases": [],
+          "description": "머리 뒤쪽 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.279,
+              "y": 0.075
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-08",
+          "name": "귀",
+          "english": "ear",
+          "aliases": [],
+          "description": "소리를 듣는 귀 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.25,
+              "y": 0.179
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-09",
+          "name": "아래턱",
+          "english": null,
+          "aliases": [],
+          "description": "입의 아래쪽을 이루는 턱입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.151,
+              "y": 0.258
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-10",
+          "name": "뺨",
+          "english": "cheek",
+          "aliases": [],
+          "description": "눈 아래에서 턱 옆으로 이어지는 얼굴 옆부분입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.184,
+              "y": 0.196
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-11",
+          "name": "인후",
+          "english": "throat",
+          "aliases": [],
+          "description": "턱 아래에서 목 앞쪽으로 이어지는 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.187,
+              "y": 0.275
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-12",
+          "name": "목",
+          "english": "neck",
+          "aliases": [],
+          "description": "머리와 몸통 사이의 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.263,
+              "y": 0.337
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-13",
+          "name": "어깨",
+          "english": "shoulder",
+          "aliases": [],
+          "description": "앞다리 위쪽에서 몸통과 이어지는 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.321,
+              "y": 0.413
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-14",
+          "name": "견단",
+          "english": "point of shoulder",
+          "aliases": [
+            "어깨끝"
+          ],
+          "description": "어깨 앞쪽의 돌출된 끝으로, 어깨점이라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.231,
+              "y": 0.445
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-15",
+          "name": "상완",
+          "english": "upperarm",
+          "aliases": [],
+          "description": "어깨에서 팔꿈치까지 이어지는 앞다리의 윗부분입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.315,
+              "y": 0.586
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-16",
+          "name": "기갑",
+          "english": "withers",
+          "aliases": [
+            "위더스"
+          ],
+          "description": "어깨뼈 사이의 등 쪽에서 높게 솟은 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.37,
+              "y": 0.265
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-17",
+          "name": "등",
+          "english": "back",
+          "aliases": [],
+          "description": "기갑 뒤에서 허리 앞까지 이어지는 몸통 윗부분입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.493,
+              "y": 0.304
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-18",
+          "name": "갈비",
+          "english": "rib",
+          "aliases": [],
+          "description": "가슴 양옆에서 흉곽을 이루는 갈비뼈 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.465,
+              "y": 0.449
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-19",
+          "name": "팔꿈치",
+          "english": "elbow",
+          "aliases": [],
+          "description": "앞다리에서 상완과 전완이 만나는 관절 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.37,
+              "y": 0.581
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-20",
+          "name": "전완",
+          "english": "forearm",
+          "aliases": [],
+          "description": "팔꿈치와 앞발목 사이에 있는 앞다리 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.331,
+              "y": 0.726
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-21",
+          "name": "무릎",
+          "english": "knee",
+          "aliases": [],
+          "description": "원본에서 앞다리의 앞발목 부위를 무릎으로 표시합니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.332,
+              "y": 0.812
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "body-22",
+          "name": "중족",
+          "english": "pastern",
+          "aliases": [],
+          "description": "발목 아래에서 발가락 쪽으로 이어지는 부위입니다. 앞다리와 뒷다리는 그림에서 구분해 보세요.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.327,
+              "y": 0.89
+            }
+          ],
+          "quiz": false,
+          "qualifier": "앞다리",
+          "note": "원본은 앞다리 부위를 중족으로 표시합니다. 위치와 용어를 비교해 확인하세요."
+        },
+        {
+          "id": "body-23",
+          "name": "발",
+          "english": "foot",
+          "aliases": [],
+          "description": "다리 끝에서 바닥에 닿는 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.293,
+              "y": 0.957
+            }
+          ],
+          "quiz": true,
+          "qualifier": "앞다리"
+        },
+        {
+          "id": "body-24",
+          "name": "앞가슴",
+          "english": "brisket",
+          "aliases": [],
+          "description": "앞다리 사이와 뒤쪽으로 이어지는 가슴 아래쪽 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.41,
+              "y": 0.614
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "body-25",
+          "name": "복부",
+          "english": "abdomen",
+          "aliases": [],
+          "description": "가슴 뒤에서 뒷다리 앞까지 이어지는 배 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.502,
+              "y": 0.583
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-26",
+          "name": "턱업",
+          "english": "tuck up",
+          "aliases": [
+            "터크업"
+          ],
+          "description": "배 아래 선이 뒤쪽으로 올라가는 부분입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.564,
+              "y": 0.555
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-27",
+          "name": "옆구리",
+          "english": "flank",
+          "aliases": [],
+          "description": "갈비뼈 뒤쪽과 뒷다리 앞쪽 사이의 몸통 옆부분입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.597,
+              "y": 0.475
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-28",
+          "name": "커플링",
+          "english": "coupling",
+          "aliases": [
+            "커플링"
+          ],
+          "description": "갈비뼈 뒤와 골반 사이를 잇는 몸통 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.61,
+              "y": 0.382
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-29",
+          "name": "허리",
+          "english": "loin",
+          "aliases": [],
+          "description": "등 뒤에서 엉덩이 앞까지 이어지는 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.588,
+              "y": 0.311
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-30",
+          "name": "엉덩이",
+          "english": "croup",
+          "aliases": [],
+          "description": "허리 뒤에서 꼬리 쪽으로 이어지는 몸통 뒷부분입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.7,
+              "y": 0.331
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-31",
+          "name": "대퇴부",
+          "english": "thigh",
+          "aliases": [],
+          "description": "엉덩이 아래에서 무릎까지 이어지는 뒷다리 윗부분입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.713,
+              "y": 0.526
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-32",
+          "name": "좌골단",
+          "english": "point of buttock",
+          "aliases": [],
+          "description": "엉덩이 뒤쪽에서 좌골이 돌출되는 지점입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.782,
+              "y": 0.433
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-33",
+          "name": "꼬리",
+          "english": "tail",
+          "aliases": [],
+          "description": "몸통 뒤쪽에 이어지는 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.875,
+              "y": 0.35
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-34",
+          "name": "무릎관절",
+          "english": "stifle",
+          "aliases": [
+            "스티플"
+          ],
+          "description": "뒷다리에서 대퇴와 하퇴가 만나는 관절입니다. 스티플이라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.682,
+              "y": 0.68
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-35",
+          "name": "하퇴부",
+          "english": "second thigh",
+          "aliases": [],
+          "description": "뒷다리의 무릎 아래에서 비절까지 이어지는 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.73,
+              "y": 0.733
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-36",
+          "name": "비절",
+          "english": "hock",
+          "aliases": [
+            "호크"
+          ],
+          "description": "뒷다리 하퇴와 뒷발허리 사이의 관절 부위입니다. 호크라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.823,
+              "y": 0.763
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "body-37",
+          "name": "중족",
+          "english": "pastern",
+          "aliases": [],
+          "description": "발목 아래에서 발가락 쪽으로 이어지는 부위입니다. 앞다리와 뒷다리는 그림에서 구분해 보세요.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.819,
+              "y": 0.875
+            }
+          ],
+          "quiz": true,
+          "qualifier": "뒷다리"
+        },
+        {
+          "id": "body-38",
+          "name": "발",
+          "english": "foot",
+          "aliases": [],
+          "description": "다리 끝에서 바닥에 닿는 부위입니다.",
+          "positions": [
+            {
+              "image_id": "body-main",
+              "x": 0.8,
+              "y": 0.956
+            }
+          ],
+          "quiz": true,
+          "qualifier": "뒷다리"
+        }
+      ]
+    },
+    {
+      "id": "axial",
+      "title": "머리·척추·흉곽 골격",
+      "figures": [
+        {
+          "id": "axial-main",
+          "title": "머리·척추·흉곽 골격",
+          "src": "./images/anatomy/dog-skeleton-cutout.png",
+          "width": 1816,
+          "height": 866
+        }
+      ],
+      "entries": [
+        {
+          "id": "skeleton-skull",
+          "name": "두개골",
+          "english": "skull",
+          "aliases": [
+            "머리뼈"
+          ],
+          "description": "머리를 이루고 뇌를 감싸는 뼈입니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.116,
+              "y": 0.075
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "skeleton-atlas",
+          "name": "환추",
+          "english": "atlas",
+          "aliases": [
+            "제1경추",
+            "고리뼈"
+          ],
+          "description": "머리 바로 뒤에 있는 첫 번째 경추로 고리뼈라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.187,
+              "y": 0.135
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "skeleton-axis",
+          "name": "축추",
+          "english": "axis",
+          "aliases": [
+            "제2경추",
+            "중쇠뼈"
+          ],
+          "description": "환추 뒤에 있는 두 번째 경추로 중쇠뼈라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.212,
+              "y": 0.196
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "skeleton-cervical",
+          "name": "경추",
+          "english": "cervical vertebrae",
+          "aliases": [
+            "목뼈"
+          ],
+          "description": "목을 이루는 척추입니다. 원본에는 7개로 표시되어 있습니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.239,
+              "y": 0.307
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "skeleton-thoracic",
+          "name": "흉추",
+          "english": "thoracic vertebrae",
+          "aliases": [
+            "등뼈"
+          ],
+          "description": "등과 흉곽 쪽에 있는 척추입니다. 원본에는 13개로 표시되어 있습니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.424,
+              "y": 0.414
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "skeleton-spinous-process",
+          "name": "극돌기",
+          "english": "spinous process",
+          "aliases": [
+            "가시돌기"
+          ],
+          "description": "척추뼈에서 등 쪽으로 뻗어 나오는 돌기로 가시돌기라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.329,
+              "y": 0.36
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "skeleton-lumbar",
+          "name": "요추",
+          "english": "lumbar vertebrae",
+          "aliases": [
+            "허리뼈"
+          ],
+          "description": "허리 부위의 척추입니다. 원본에는 7개로 표시되어 있습니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.669,
+              "y": 0.404
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "skeleton-sacrum",
+          "name": "선골",
+          "english": "sacrum",
+          "aliases": [
+            "엉치뼈"
+          ],
+          "description": "허리 뒤 골반 쪽에 있는 엉치뼈입니다. 원본에는 3개로 표시되어 있습니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.774,
+              "y": 0.402
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "skeleton-caudal",
+          "name": "미추",
+          "english": "caudal vertebrae",
+          "aliases": [
+            "꼬리뼈"
+          ],
+          "description": "꼬리를 이루는 척추뼈입니다. 원본은 견종에 따라 3~26개로 설명합니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.932,
+              "y": 0.725
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "skeleton-ribs",
+          "name": "늑골",
+          "english": "rib",
+          "aliases": [
+            "갈비뼈",
+            "리브"
+          ],
+          "description": "흉추와 연결되어 가슴을 둘러싸는 갈비뼈입니다. 원본은 13쌍으로 표시합니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.411,
+              "y": 0.603
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "skeleton-sternal-ribs",
+          "name": "진늑골",
+          "english": "sternal ribs",
+          "aliases": [
+            "흉늑골",
+            "복장뼈늑골"
+          ],
+          "description": "앞쪽에서 흉골과 연결되는 갈비뼈입니다. 원본은 앞쪽 9쌍으로 설명합니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.31,
+              "y": 0.6
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "skeleton-asternal-ribs",
+          "name": "가늑골",
+          "english": "asternal ribs",
+          "aliases": [
+            "비흉늑골"
+          ],
+          "description": "흉골에 직접 연결되지 않는 뒤쪽 갈비뼈입니다. 원본은 뒤쪽 4쌍으로 설명합니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.51,
+              "y": 0.611
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "skeleton-last-rib",
+          "name": "라스트 립",
+          "english": "last rib",
+          "aliases": [
+            "최종 늑골",
+            "마지막 늑골"
+          ],
+          "description": "가장 뒤에 있는 마지막 갈비뼈입니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.543,
+              "y": 0.596
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "skeleton-prosternum",
+          "name": "흉골병",
+          "english": "prosternum",
+          "aliases": [],
+          "description": "가슴뼈의 앞쪽 끝을 이루는 부분입니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.222,
+              "y": 0.674
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "skeleton-sternum",
+          "name": "흉골",
+          "english": "sternum",
+          "aliases": [
+            "복장뼈"
+          ],
+          "description": "가슴 아래쪽에서 갈비뼈와 연결되는 복장뼈입니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.37,
+              "y": 0.835
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "skeleton-costal-cartilage",
+          "name": "늑연골",
+          "english": "costal cartilage",
+          "aliases": [
+            "갈비연골"
+          ],
+          "description": "갈비뼈의 끝에서 흉골 쪽으로 이어지는 연골입니다.",
+          "positions": [
+            {
+              "image_id": "axial-main",
+              "x": 0.292,
+              "y": 0.77
+            }
+          ],
+          "quiz": false
+        }
+      ]
+    },
+    {
+      "id": "fore",
+      "title": "전구",
+      "figures": [
+        {
+          "id": "01-forequarters",
+          "title": "전구: 머리와 앞다리",
+          "src": "./images/anatomy/01-forequarters.png",
+          "width": 1024,
+          "height": 1536
+        }
+      ],
+      "entries": [
+        {
+          "id": "photo-01-01",
+          "name": "액단",
+          "english": "stop",
+          "aliases": [
+            "콧등우묵",
+            "스톱",
+            "이마 단"
+          ],
+          "description": "이마와 콧등 사이의 들어간 부분으로 스톱이라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.26,
+              "y": 0.13
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-02",
+          "name": "안",
+          "english": "eye",
+          "aliases": [
+            "눈"
+          ],
+          "description": "눈을 뜻하는 원본의 표기입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.3,
+              "y": 0.12
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-03",
+          "name": "비",
+          "english": "nose",
+          "aliases": [
+            "코"
+          ],
+          "description": "코를 뜻하는 원본의 표기입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.156,
+              "y": 0.185
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-04",
+          "name": "구문",
+          "english": "muzzle",
+          "aliases": [
+            "주둥이",
+            "머즐"
+          ],
+          "description": "코와 입이 있는 주둥이를 뜻하는 원본의 표기입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.205,
+              "y": 0.207
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-05",
+          "name": "구진",
+          "english": "lip",
+          "aliases": [
+            "입술"
+          ],
+          "description": "입술을 뜻하는 원본의 표기입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.235,
+              "y": 0.235
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-06",
+          "name": "협",
+          "english": "cheek",
+          "aliases": [
+            "볼",
+            "뺨"
+          ],
+          "description": "얼굴 옆의 볼 또는 뺨을 뜻합니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.325,
+              "y": 0.2
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-07",
+          "name": "두개",
+          "english": "skull",
+          "aliases": [
+            "머리",
+            "두개부"
+          ],
+          "description": "머리뼈가 있는 머리의 윗부분입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.398,
+              "y": 0.06
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-08",
+          "name": "후두부",
+          "english": "occiput",
+          "aliases": [],
+          "description": "머리 뒤쪽 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.495,
+              "y": 0.062
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-09",
+          "name": "경",
+          "english": "neck",
+          "aliases": [
+            "목"
+          ],
+          "description": "머리와 몸통 사이의 목 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.625,
+              "y": 0.195
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-10",
+          "name": "이",
+          "english": "ear",
+          "aliases": [
+            "귀"
+          ],
+          "description": "귀를 뜻하는 원본의 표기입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.472,
+              "y": 0.145
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-11",
+          "name": "후",
+          "english": "throat",
+          "aliases": [
+            "목",
+            "인후"
+          ],
+          "description": "턱 아래 목 앞쪽의 인후 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.405,
+              "y": 0.255
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-12",
+          "name": "기갑",
+          "english": "withers",
+          "aliases": [
+            "등마루"
+          ],
+          "description": "어깨뼈 사이의 등 쪽에서 높게 솟은 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.785,
+              "y": 0.27
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-13",
+          "name": "견",
+          "english": "shoulder",
+          "aliases": [
+            "어깨"
+          ],
+          "description": "앞다리 위쪽에서 몸통과 이어지는 어깨 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.66,
+              "y": 0.43
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-14",
+          "name": "견단",
+          "english": "point of shoulder",
+          "aliases": [
+            "어깨점",
+            "어깨끝"
+          ],
+          "description": "어깨 앞쪽의 돌출된 끝으로, 어깨점이라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.44,
+              "y": 0.435
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-15",
+          "name": "액와",
+          "english": "armpit",
+          "aliases": [
+            "겨드랑이"
+          ],
+          "description": "앞다리 안쪽이 몸통과 만나는 겨드랑이 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.765,
+              "y": 0.55
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-16",
+          "name": "상완",
+          "english": "upper arm",
+          "aliases": [
+            "위팔"
+          ],
+          "description": "어깨에서 팔꿈치까지 이어지는 앞다리의 윗부분입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.54,
+              "y": 0.59
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-17",
+          "name": "주",
+          "english": "elbow",
+          "aliases": [
+            "팔꿈치"
+          ],
+          "description": "상완과 전완이 만나는 팔꿈치 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.72,
+              "y": 0.63
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-18",
+          "name": "전완",
+          "english": "forearm",
+          "aliases": [
+            "앞다리",
+            "아래팔"
+          ],
+          "description": "팔꿈치와 앞발목 사이에 있는 앞다리 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.62,
+              "y": 0.75
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-19",
+          "name": "수근",
+          "english": "carpus",
+          "aliases": [
+            "앞발목"
+          ],
+          "description": "앞다리 전완 아래의 앞발목 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.63,
+              "y": 0.87
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-20",
+          "name": "중수",
+          "english": "pastern",
+          "aliases": [
+            "발목"
+          ],
+          "description": "앞발목 아래에서 발가락으로 이어지는 앞발 부위입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.615,
+              "y": 0.925
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-01-21",
+          "name": "지",
+          "english": "toe",
+          "aliases": [
+            "손가락",
+            "발가락"
+          ],
+          "description": "다리 끝에 있는 발가락을 뜻하는 표기입니다.",
+          "positions": [
+            {
+              "image_id": "01-forequarters",
+              "x": 0.6,
+              "y": 0.965
+            }
+          ],
+          "quiz": true
+        }
+      ]
+    },
+    {
+      "id": "middle",
+      "title": "중구",
+      "figures": [
+        {
+          "id": "02-middle-main",
+          "title": "중구: 몸통 부분",
+          "src": "./images/anatomy/02-middle-main.png",
+          "width": 1326,
+          "height": 1187
+        },
+        {
+          "id": "02-flank",
+          "title": "중구: 옆구리의 삼각형 부위",
+          "src": "./images/anatomy/02-flank.png",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "id": "02-abdomen-side",
+          "title": "중구: 상복과 하복 옆면",
+          "src": "./images/anatomy/02-abdomen-side.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "id": "02-abdomen-rear",
+          "title": "중구: 복부 뒷면",
+          "src": "./images/anatomy/02-abdomen-rear.png",
+          "width": 1024,
+          "height": 1536
+        }
+      ],
+      "entries": [
+        {
+          "id": "photo-02-01",
+          "name": "배",
+          "english": "back",
+          "aliases": [
+            "등"
+          ],
+          "description": "등 쪽 몸통 윗부분을 뜻하는 원본의 표기입니다.",
+          "positions": [
+            {
+              "image_id": "02-middle-main",
+              "x": 0.5,
+              "y": 0.195
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-02-02",
+          "name": "늑골",
+          "english": "rib",
+          "aliases": [
+            "갈비뼈"
+          ],
+          "description": "흉추와 연결되어 가슴을 둘러싸는 갈비뼈입니다. 원본은 13쌍으로 표시합니다.",
+          "positions": [
+            {
+              "image_id": "02-middle-main",
+              "x": 0.405,
+              "y": 0.42
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-02-03",
+          "name": "하흉",
+          "english": "brisket",
+          "aliases": [
+            "가슴",
+            "앞가슴"
+          ],
+          "description": "가슴 아래쪽 부위로 브리스킷이라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "02-middle-main",
+              "x": 0.325,
+              "y": 0.81
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-02-04",
+          "name": "복부",
+          "english": "abdomen",
+          "aliases": [
+            "배 부위"
+          ],
+          "description": "가슴 뒤에서 뒷다리 앞까지 이어지는 배 부위입니다.",
+          "positions": [
+            {
+              "image_id": "02-middle-main",
+              "x": 0.61,
+              "y": 0.455
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-02-05",
+          "name": "겸",
+          "english": "flank",
+          "aliases": [
+            "옆구리"
+          ],
+          "description": "갈비뼈 뒤와 하복에 가까운 옆구리 부위입니다.",
+          "positions": [
+            {
+              "image_id": "02-middle-main",
+              "x": 0.64,
+              "y": 0.6
+            },
+            {
+              "image_id": "02-flank",
+              "x": 0.592,
+              "y": 0.51
+            }
+          ],
+          "quiz": true,
+          "note": "원본은 늑골 뒤쪽, 하복에 가까운 삼각 부위로 설명합니다."
+        },
+        {
+          "id": "photo-02-06",
+          "name": "상복",
+          "english": null,
+          "aliases": [
+            "윗배"
+          ],
+          "description": "복부의 윗부분입니다.",
+          "positions": [
+            {
+              "image_id": "02-abdomen-side",
+              "x": 0.39,
+              "y": 0.48
+            },
+            {
+              "image_id": "02-abdomen-rear",
+              "x": 0.35,
+              "y": 0.54
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-02-07",
+          "name": "하복",
+          "english": null,
+          "aliases": [
+            "아랫배"
+          ],
+          "description": "복부의 아랫부분입니다.",
+          "positions": [
+            {
+              "image_id": "02-abdomen-side",
+              "x": 0.365,
+              "y": 0.63
+            },
+            {
+              "image_id": "02-abdomen-rear",
+              "x": 0.35,
+              "y": 0.65
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-02-08",
+          "name": "측복",
+          "english": null,
+          "aliases": [
+            "옆쪽 배"
+          ],
+          "description": "복부의 옆쪽 부분입니다.",
+          "positions": [
+            {
+              "image_id": "02-abdomen-rear",
+              "x": 0.7,
+              "y": 0.54
+            }
+          ],
+          "quiz": false
+        }
+      ]
+    },
+    {
+      "id": "hind",
+      "title": "후구",
+      "figures": [
+        {
+          "id": "03-hindquarters",
+          "title": "후구: 허리와 뒷다리",
+          "src": "./images/anatomy/03-hindquarters.png",
+          "width": 1024,
+          "height": 1536
+        }
+      ],
+      "entries": [
+        {
+          "id": "photo-03-01",
+          "name": "십자부",
+          "english": "pelvic arch",
+          "aliases": [
+            "요각"
+          ],
+          "description": "허리에서 엉덩이로 이어지는 골반 윗부분입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.43,
+              "y": 0.38
+            }
+          ],
+          "quiz": true,
+          "note": "원본은 요부에서 엉덩이로 이행되는 부위라고 설명합니다."
+        },
+        {
+          "id": "photo-03-02",
+          "name": "미",
+          "english": "tail",
+          "aliases": [
+            "꼬리"
+          ],
+          "description": "꼬리를 뜻하는 원본의 표기입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.56,
+              "y": 0.145
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-03",
+          "name": "요",
+          "english": "loin",
+          "aliases": [
+            "허리"
+          ],
+          "description": "등 뒤에서 엉덩이 앞까지 이어지는 허리 부위입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.33,
+              "y": 0.405
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-04",
+          "name": "좌골단",
+          "english": "point of the buttocks",
+          "aliases": [
+            "엉덩이점"
+          ],
+          "description": "엉덩이 뒤쪽에서 좌골이 돌출되는 지점입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.56,
+              "y": 0.45
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-05",
+          "name": "고",
+          "english": "rump",
+          "aliases": [
+            "엉덩이"
+          ],
+          "description": "엉덩이를 뜻하는 원본의 표기입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.53,
+              "y": 0.49
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-06",
+          "name": "대퇴",
+          "english": "upper thigh",
+          "aliases": [
+            "넓적다리",
+            "대퇴부"
+          ],
+          "description": "엉덩이와 무릎 사이의 뒷다리 윗부분입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.5,
+              "y": 0.575
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-07",
+          "name": "하퇴",
+          "english": "lower thigh",
+          "aliases": [
+            "아래 넓적다리",
+            "하퇴부"
+          ],
+          "description": "뒷다리 무릎 아래에서 비절까지 이어지는 부분입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.57,
+              "y": 0.69
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-08",
+          "name": "슬",
+          "english": "stifle",
+          "aliases": [
+            "무릎",
+            "무릎관절"
+          ],
+          "description": "뒷다리 대퇴와 하퇴가 만나는 무릎관절입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.42,
+              "y": 0.67
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-09",
+          "name": "비절",
+          "english": "hock joint",
+          "aliases": [
+            "족근",
+            "호크"
+          ],
+          "description": "뒷다리 하퇴와 뒷발허리 사이의 관절 부위입니다. 호크라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.72,
+              "y": 0.805
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-10",
+          "name": "중족",
+          "english": "metatarsus",
+          "aliases": [
+            "뒷발허리"
+          ],
+          "description": "발목 아래에서 발가락 쪽으로 이어지는 부위입니다. 앞다리와 뒷다리는 그림에서 구분해 보세요.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.735,
+              "y": 0.885
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-11",
+          "name": "지",
+          "english": "digit",
+          "aliases": [
+            "발가락"
+          ],
+          "description": "다리 끝에 있는 발가락을 뜻하는 표기입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.735,
+              "y": 0.96
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-12",
+          "name": "족저",
+          "english": "pad",
+          "aliases": [
+            "볼록살",
+            "발바닥 패드"
+          ],
+          "description": "발바닥이 바닥에 닿는 패드 부위입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.56,
+              "y": 0.96
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-03-13",
+          "name": "턱 업",
+          "english": "tuck-up",
+          "aliases": [
+            "턱업",
+            "말려 올라간 곳"
+          ],
+          "description": "배 아래 선이 뒤쪽으로 올라가는 부분입니다.",
+          "positions": [
+            {
+              "image_id": "03-hindquarters",
+              "x": 0.3,
+              "y": 0.565
+            }
+          ],
+          "quiz": true
+        }
+      ]
+    },
+    {
+      "id": "trunk",
+      "title": "동체",
+      "figures": [
+        {
+          "id": "04-body-fragment",
+          "title": "동체: 몸통의 외형",
+          "src": "./images/anatomy/04-body-fragment.png",
+          "width": 1774,
+          "height": 887
+        },
+        {
+          "id": "04-body-cavities",
+          "title": "동체: 흉부와 복부",
+          "src": "./images/anatomy/04-body-cavities.png",
+          "width": 1774,
+          "height": 887
+        }
+      ],
+      "entries": [
+        {
+          "id": "photo-04-01",
+          "name": "기갑",
+          "english": "withers",
+          "aliases": [
+            "등마루"
+          ],
+          "description": "어깨뼈 사이의 등 쪽에서 높게 솟은 부위입니다.",
+          "positions": [
+            {
+              "image_id": "04-body-fragment",
+              "x": 0.335,
+              "y": 0.315
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-04-02",
+          "name": "배",
+          "english": "back",
+          "aliases": [
+            "등"
+          ],
+          "description": "등 쪽 몸통 윗부분을 뜻하는 원본의 표기입니다.",
+          "positions": [
+            {
+              "image_id": "04-body-fragment",
+              "x": 0.45,
+              "y": 0.325
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-04-03",
+          "name": "요",
+          "english": "loin",
+          "aliases": [
+            "허리"
+          ],
+          "description": "등 뒤에서 엉덩이 앞까지 이어지는 허리 부위입니다.",
+          "positions": [
+            {
+              "image_id": "04-body-fragment",
+              "x": 0.625,
+              "y": 0.345
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-04-04",
+          "name": "견",
+          "english": "shoulder",
+          "aliases": [
+            "어깨"
+          ],
+          "description": "앞다리 위쪽에서 몸통과 이어지는 어깨 부위입니다.",
+          "positions": [
+            {
+              "image_id": "04-body-fragment",
+              "x": 0.255,
+              "y": 0.49
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-04-05",
+          "name": "견단",
+          "english": "point of shoulder",
+          "aliases": [
+            "어깨 점"
+          ],
+          "description": "어깨 앞쪽의 돌출된 끝으로, 어깨점이라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "04-body-fragment",
+              "x": 0.245,
+              "y": 0.625
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-04-06",
+          "name": "하흉",
+          "english": "brisket",
+          "aliases": [
+            "가슴",
+            "앞가슴"
+          ],
+          "description": "가슴 아래쪽 부위로 브리스킷이라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "04-body-fragment",
+              "x": 0.365,
+              "y": 0.755
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-04-07",
+          "name": "턱 업",
+          "english": "tuck-up",
+          "aliases": [
+            "턱업"
+          ],
+          "description": "배 아래 선이 뒤쪽으로 올라가는 부분입니다.",
+          "positions": [
+            {
+              "image_id": "04-body-fragment",
+              "x": 0.595,
+              "y": 0.625
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-04-08",
+          "name": "흉부",
+          "english": null,
+          "aliases": [
+            "가슴 부위"
+          ],
+          "description": "가슴 부위로 심장과 폐가 자리한 부분입니다.",
+          "positions": [
+            {
+              "image_id": "04-body-cavities",
+              "x": 0.37,
+              "y": 0.61
+            }
+          ],
+          "quiz": true,
+          "note": "원본은 흉부에 심장과 폐가 있다고 표시합니다."
+        },
+        {
+          "id": "photo-04-09",
+          "name": "복부",
+          "english": "abdomen",
+          "aliases": [
+            "배 부위"
+          ],
+          "description": "가슴 뒤에서 뒷다리 앞까지 이어지는 배 부위입니다.",
+          "positions": [
+            {
+              "image_id": "04-body-cavities",
+              "x": 0.61,
+              "y": 0.555
+            }
+          ],
+          "quiz": true,
+          "note": "원본은 복부에 위, 간, 대장, 소장 등을 표시합니다."
+        }
+      ]
+    },
+    {
+      "id": "forebones",
+      "title": "앞다리 골격",
+      "figures": [
+        {
+          "id": "05-forelimb-bones",
+          "title": "앞다리 골격",
+          "src": "./images/anatomy/05-forelimb-bones.png",
+          "width": 1024,
+          "height": 1536
+        }
+      ],
+      "entries": [
+        {
+          "id": "photo-05-01",
+          "name": "견갑골",
+          "english": "scapula",
+          "aliases": [
+            "어깨뼈"
+          ],
+          "description": "어깨 부위에 있는 넓은 뼈로 어깨뼈라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "05-forelimb-bones",
+              "x": 0.545,
+              "y": 0.13
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-05-02",
+          "name": "상완골",
+          "english": "humerus",
+          "aliases": [
+            "위팔뼈"
+          ],
+          "description": "어깨와 팔꿈치 사이의 위팔뼈입니다.",
+          "positions": [
+            {
+              "image_id": "05-forelimb-bones",
+              "x": 0.43,
+              "y": 0.37
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-05-03",
+          "name": "요골",
+          "english": "radius",
+          "aliases": [
+            "노뼈"
+          ],
+          "description": "앞다리 전완을 이루는 두 뼈 중 하나로 노뼈라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "05-forelimb-bones",
+              "x": 0.52,
+              "y": 0.64
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-05-04",
+          "name": "척골",
+          "english": "ulna",
+          "aliases": [
+            "자뼈"
+          ],
+          "description": "앞다리 전완을 이루는 두 뼈 중 하나로 자뼈라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "05-forelimb-bones",
+              "x": 0.605,
+              "y": 0.625
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-05-05",
+          "name": "수근골",
+          "english": "carpus",
+          "aliases": [
+            "앞발목뼈"
+          ],
+          "description": "앞발목을 이루는 여러 개의 작은 뼈입니다.",
+          "positions": [
+            {
+              "image_id": "05-forelimb-bones",
+              "x": 0.565,
+              "y": 0.78
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-05-06",
+          "name": "중수골",
+          "english": "metacarpal bones",
+          "aliases": [
+            "앞발허리뼈"
+          ],
+          "description": "앞발목과 발가락뼈 사이의 앞발허리뼈입니다.",
+          "positions": [
+            {
+              "image_id": "05-forelimb-bones",
+              "x": 0.515,
+              "y": 0.865
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-05-07",
+          "name": "지골",
+          "english": "phalanges manus",
+          "aliases": [
+            "발가락뼈"
+          ],
+          "description": "발가락을 이루는 뼈입니다. 그림에 따라 앞발과 뒷발을 구분합니다.",
+          "positions": [
+            {
+              "image_id": "05-forelimb-bones",
+              "x": 0.425,
+              "y": 0.95
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-05-08",
+          "name": "낭조",
+          "english": "dewclaw",
+          "aliases": [
+            "며느리발톱"
+          ],
+          "description": "발 안쪽 위에 위치하는 며느리발톱입니다.",
+          "positions": [],
+          "quiz": false
+        }
+      ]
+    },
+    {
+      "id": "compare",
+      "title": "사람과 개 전지 비교",
+      "figures": [
+        {
+          "id": "06-dog-comparison",
+          "title": "개 전지와 골격 비교",
+          "src": "./images/anatomy/06-dog-comparison.png",
+          "width": 1448,
+          "height": 1086
+        },
+        {
+          "id": "06-human-comparison",
+          "title": "사람 팔과 골격 비교",
+          "src": "./images/anatomy/06-human-comparison.png",
+          "width": 1306,
+          "height": 1205
+        },
+        {
+          "id": "06-dog-paw",
+          "title": "개의 앞발 골격",
+          "src": "./images/anatomy/06-dog-paw.png",
+          "width": 1064,
+          "height": 1478
+        },
+        {
+          "id": "06-human-hand",
+          "title": "사람의 손 골격",
+          "src": "./images/anatomy/06-human-hand.png",
+          "width": 1536,
+          "height": 1024
+        }
+      ],
+      "entries": [
+        {
+          "id": "photo-06-01",
+          "name": "견갑골",
+          "english": "scapula",
+          "aliases": [
+            "어깨뼈"
+          ],
+          "description": "어깨 부위에 있는 넓은 뼈로 어깨뼈라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-comparison",
+              "x": 0.37,
+              "y": 0.39
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-06-02",
+          "name": "쇄골",
+          "english": "clavicle",
+          "aliases": [],
+          "description": "어깨 부위와 가슴 앞쪽을 연결하는 뼈입니다. 그림에서 사람과 개의 차이를 비교합니다.",
+          "positions": [],
+          "quiz": false
+        },
+        {
+          "id": "photo-06-03",
+          "name": "상완골",
+          "english": "humerus",
+          "aliases": [
+            "위팔뼈"
+          ],
+          "description": "어깨와 팔꿈치 사이의 위팔뼈입니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-comparison",
+              "x": 0.337,
+              "y": 0.535
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-06-04",
+          "name": "요골",
+          "english": "radius",
+          "aliases": [
+            "노뼈"
+          ],
+          "description": "앞다리 전완을 이루는 두 뼈 중 하나로 노뼈라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-comparison",
+              "x": 0.337,
+              "y": 0.735
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-06-05",
+          "name": "척골",
+          "english": "ulna",
+          "aliases": [
+            "자뼈"
+          ],
+          "description": "앞다리 전완을 이루는 두 뼈 중 하나로 자뼈라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-comparison",
+              "x": 0.365,
+              "y": 0.73
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-06-06",
+          "name": "수근골",
+          "english": "carpal bones",
+          "aliases": [
+            "앞발목뼈"
+          ],
+          "description": "앞발목을 이루는 여러 개의 작은 뼈입니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-paw",
+              "x": 0.565,
+              "y": 0.3
+            },
+            {
+              "image_id": "06-human-hand",
+              "x": 0.685,
+              "y": 0.55
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "photo-06-07",
+          "name": "수수",
+          "english": "wrist",
+          "aliases": [
+            "손목"
+          ],
+          "description": "손목을 뜻하는 표기입니다. 사람의 손 그림에서 확인하세요.",
+          "positions": [
+            {
+              "image_id": "06-human-hand",
+              "x": 0.7,
+              "y": 0.465
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "photo-06-08",
+          "name": "중수골",
+          "english": "metacarpal bones",
+          "aliases": [
+            "앞발허리뼈"
+          ],
+          "description": "앞발목과 발가락뼈 사이의 앞발허리뼈입니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-paw",
+              "x": 0.53,
+              "y": 0.55
+            },
+            {
+              "image_id": "06-human-hand",
+              "x": 0.55,
+              "y": 0.7
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "photo-06-09",
+          "name": "기절골",
+          "english": "proximal phalanges",
+          "aliases": [
+            "첫마디뼈"
+          ],
+          "description": "발가락이나 손가락의 몸쪽에 있는 첫마디뼈입니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-paw",
+              "x": 0.43,
+              "y": 0.775
+            },
+            {
+              "image_id": "06-human-hand",
+              "x": 0.41,
+              "y": 0.77
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "photo-06-10",
+          "name": "중절골",
+          "english": "middle phalanges",
+          "aliases": [
+            "중간마디뼈"
+          ],
+          "description": "발가락이나 손가락의 가운데 마디뼈입니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-paw",
+              "x": 0.355,
+              "y": 0.83
+            },
+            {
+              "image_id": "06-human-hand",
+              "x": 0.31,
+              "y": 0.81
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "photo-06-11",
+          "name": "말절골",
+          "english": "distal phalanges",
+          "aliases": [
+            "끝마디뼈"
+          ],
+          "description": "발가락이나 손가락 끝에 있는 마디뼈입니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-paw",
+              "x": 0.245,
+              "y": 0.9
+            },
+            {
+              "image_id": "06-human-hand",
+              "x": 0.23,
+              "y": 0.84
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "photo-06-12",
+          "name": "낭조",
+          "english": "dewclaw",
+          "aliases": [
+            "며느리발톱"
+          ],
+          "description": "발 안쪽 위에 위치하는 며느리발톱입니다.",
+          "positions": [
+            {
+              "image_id": "06-dog-paw",
+              "x": 0.71,
+              "y": 0.65
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "photo-06-13",
+          "name": "엄지",
+          "english": "thumb",
+          "aliases": [],
+          "description": "사람의 손에서 다른 네 손가락과 구별되는 첫째 손가락입니다.",
+          "positions": [
+            {
+              "image_id": "06-human-hand",
+              "x": 0.805,
+              "y": 0.83
+            }
+          ],
+          "quiz": false
+        }
+      ]
+    },
+    {
+      "id": "hindbones",
+      "title": "뒷다리 골격",
+      "figures": [
+        {
+          "id": "07-hindlimb-bones",
+          "title": "뒷다리 골격",
+          "src": "./images/anatomy/07-hindlimb-bones.png",
+          "width": 1024,
+          "height": 1536
+        }
+      ],
+      "entries": [
+        {
+          "id": "photo-07-01",
+          "name": "관골",
+          "english": "os coxae",
+          "aliases": [
+            "볼기뼈"
+          ],
+          "description": "골반을 이루는 뼈로 볼기뼈라고도 합니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.435,
+              "y": 0.115
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-07-02",
+          "name": "좌골결절",
+          "english": "tuber ischiadicum",
+          "aliases": [
+            "궁둥뼈 결절"
+          ],
+          "description": "골반 뒤쪽 좌골에서 돌출되는 부분입니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.65,
+              "y": 0.25
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-07-03",
+          "name": "대퇴골",
+          "english": "femur",
+          "aliases": [
+            "넓다리뼈"
+          ],
+          "description": "엉덩이와 무릎 사이의 넓다리뼈입니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.42,
+              "y": 0.37
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-07-04",
+          "name": "슬개골",
+          "english": "patella",
+          "aliases": [
+            "무릎뼈"
+          ],
+          "description": "무릎 앞쪽에 위치하는 작은 무릎뼈입니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.309,
+              "y": 0.488
+            }
+          ],
+          "quiz": false
+        },
+        {
+          "id": "photo-07-05",
+          "name": "비골",
+          "english": "fibula",
+          "aliases": [
+            "종아리뼈"
+          ],
+          "description": "뒷다리의 정강이 옆에 있는 종아리뼈입니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.475,
+              "y": 0.62
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-07-06",
+          "name": "경골",
+          "english": "tibia",
+          "aliases": [
+            "정강뼈"
+          ],
+          "description": "뒷다리 무릎과 발목 사이의 정강뼈입니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.415,
+              "y": 0.615
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-07-07",
+          "name": "종골",
+          "english": "calcaneus",
+          "aliases": [
+            "뒤꿈치뼈"
+          ],
+          "description": "뒷발목을 이루는 뼈 중 뒤꿈치 쪽으로 돌출된 뼈입니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.595,
+              "y": 0.76
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-07-08",
+          "name": "족근골",
+          "english": "tarsal bones",
+          "aliases": [
+            "뒷발목뼈"
+          ],
+          "description": "뒷발목을 이루는 여러 개의 작은 뼈입니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.545,
+              "y": 0.795
+            }
+          ],
+          "quiz": true,
+          "note": "원본에는 족근골 7개로 표기되어 있습니다."
+        },
+        {
+          "id": "photo-07-09",
+          "name": "중족골",
+          "english": "metatarsal bones",
+          "aliases": [
+            "뒷발허리뼈"
+          ],
+          "description": "뒷발목과 발가락뼈 사이에 있는 뒷발허리뼈입니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.535,
+              "y": 0.87
+            }
+          ],
+          "quiz": true
+        },
+        {
+          "id": "photo-07-10",
+          "name": "지골",
+          "english": "phalanges pedis",
+          "aliases": [
+            "발가락뼈"
+          ],
+          "description": "발가락을 이루는 뼈입니다. 그림에 따라 앞발과 뒷발을 구분합니다.",
+          "positions": [
+            {
+              "image_id": "07-hindlimb-bones",
+              "x": 0.47,
+              "y": 0.955
+            }
+          ],
+          "quiz": true
+        }
+      ]
+    }
+  ]
+}

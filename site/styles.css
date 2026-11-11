@@ -603,3 +603,83 @@ button:focus-visible, a:focus-visible { outline: 3px solid #7da74b; outline-offs
   body[data-mode="terms"] .workspace,
   body[data-mode="dashboard"] .workspace { margin-top: 15px; }
 }
+
+/* Canine anatomy study */
+.anatomy-heading { margin-bottom: 16px; }
+.anatomy-emblem span { font-family: var(--sans); font-size: 28px; }
+.anatomy-reference-note { margin: -3px 0 16px; color: #768171; font-size: 10px; line-height: 1.65; }
+.anatomy-topic-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+.anatomy-topic-bar label, .anatomy-figure-picker, .anatomy-search { color: #6a7664; font-size: 11px; font-weight: 700; }
+.anatomy-topic-bar select, .anatomy-figure-picker select, .anatomy-search input { min-height: 40px; padding: 8px 12px; border: 1px solid #dfe7d9; border-radius: 8px; background: #fff; color: #354430; font: 12px var(--sans); }
+.anatomy-topic-bar select { min-width: min(260px, 100%); }
+.anatomy-topic-bar > span { color: #83907b; font-size: 10px; }
+.anatomy-study-grid { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(230px, .82fr); gap: 16px; align-items: start; }
+.anatomy-study-visual, .anatomy-terms-pane { min-width: 0; border: 1px solid #e5ebe0; border-radius: 12px; background: #fff; padding: 14px; }
+.anatomy-figure-picker { display: flex; align-items: center; gap: 9px; }
+.anatomy-figure-picker select { flex: 1; min-width: 0; }
+.anatomy-figure-caption { margin: 0; color: #6a7664; font-size: 11px; font-weight: 700; }
+.anatomy-figure-stage { display: flex; align-items: center; justify-content: center; min-height: 180px; margin: 10px 0; padding: 12px; border: 1px solid #eff2ec; border-radius: 10px; background: #fff; overflow: hidden; }
+.anatomy-figure { position: relative; width: 100%; flex: none; }
+.anatomy-figure img { display: block; width: 100%; height: auto; }
+.anatomy-marker { position: absolute; z-index: 1; display: grid; place-items: center; width: 25px; height: 25px; border: 2px solid #fff; border-radius: 50%; background: #d95146; box-shadow: 0 0 0 4px rgba(217,81,70,.2), 0 2px 7px rgba(73,32,26,.25); transform: translate(-50%, -50%); pointer-events: none; }
+.anatomy-marker span { width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+.anatomy-figure-hint, .anatomy-question-hint { margin: 6px 0 0; color: #83907b; font-size: 10px; line-height: 1.55; }
+.anatomy-dot { display: inline-block; width: 8px; height: 8px; margin-right: 5px; border-radius: 50%; background: #d95146; }
+.anatomy-search { display: grid; gap: 7px; }
+.anatomy-search input { width: 100%; }
+.anatomy-list-help { margin: 11px 0 9px; color: #879183; font-size: 10px; line-height: 1.5; }
+.anatomy-term-list { display: grid; gap: 5px; max-height: 365px; overflow: auto; overscroll-behavior: contain; }
+.anatomy-term-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 42px; padding: 8px 10px; border: 1px solid #edf0e9; border-radius: 8px; background: #fafbf9; color: #566350; text-align: left; cursor: pointer; }
+.anatomy-term-item > span:first-child { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px 8px; min-width: 0; }
+.anatomy-term-item b { color: #344430; font-size: 12px; }
+.anatomy-term-item small { color: #8b9685; font: 10px var(--mono); }
+.anatomy-term-item.is-active { border-color: #b9ce9e; background: #f0f6e8; color: #4d703a; }
+.anatomy-list-empty { padding: 20px; color: #8c9687; font-size: 12px; text-align: center; }
+.anatomy-detail { margin-top: 15px; padding: 18px; border: 1px solid #e4eadf; border-radius: 12px; background: #f9fbf6; }
+.anatomy-detail-title { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 10px; }
+.anatomy-detail-title > span { color: #7f9272; font-size: 10px; font-weight: 700; }
+.anatomy-detail-title h3 { margin: 0; color: #30452a; font-size: 17px; }
+.anatomy-detail-title small { color: #82917b; font: 10px var(--mono); }
+.anatomy-detail p { margin: 9px 0 0; color: #52604d; font-size: 12px; line-height: 1.75; }
+.anatomy-detail .anatomy-alias { color: #75816f; font-size: 11px; }
+.anatomy-detail .anatomy-entry-note { color: #8a6c46; font-size: 11px; }
+.anatomy-quiz-progress { margin: 14px 0 8px; }
+.anatomy-question-card { min-height: 0; margin-top: 18px; }
+.anatomy-question-title { margin: 14px 0 8px; color: #303d2d; font-size: 17px; line-height: 1.5; }
+.anatomy-question-card .anatomy-figure-stage { background: #fafcf8; }
+.anatomy-question-hint { margin: 2px 0 15px; }
+.anatomy-choice-list { margin-top: 10px; }
+.anatomy-choice { align-items: center; }
+.anatomy-result { margin-top: 16px; }
+.anatomy-figure-empty { padding: 28px; color: #899382; text-align: center; }
+@media (max-width: 600px) {
+  .mobile-tabs { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .mode-tab { font-size: clamp(9px, 2.55vw, 10px); letter-spacing: -.04em; }
+  .mode-tab[data-mode="anatomy"]::before { content: "⌁"; }
+  body[data-mode="anatomy"] .hero, body[data-mode="anatomy"] .chapter-rail { display: none; }
+  body[data-mode="anatomy"] .workspace { margin-top: 15px; }
+  .anatomy-reference-note { margin: 0 0 14px; font-size: 11px; line-height: 1.65; }
+  .anatomy-topic-bar { gap: 8px; margin: 15px 0; }
+  .anatomy-topic-bar label { flex: 0 0 100%; font-size: 12px; }
+  .anatomy-topic-bar select { flex: 1 1 100%; min-height: 46px; font-size: 14px; }
+  .anatomy-topic-bar > span { font-size: 11px; }
+  .anatomy-study-grid { grid-template-columns: 1fr; gap: 10px; }
+  .anatomy-study-visual, .anatomy-terms-pane { padding: 13px; border-radius: 13px; }
+  .anatomy-figure-picker, .anatomy-figure-caption, .anatomy-search { font-size: 12px; }
+  .anatomy-figure-picker select, .anatomy-search input { min-height: 44px; font-size: 14px; }
+  .anatomy-figure-stage { min-height: 160px; margin: 9px 0; padding: 10px; }
+  .anatomy-figure-hint, .anatomy-question-hint, .anatomy-list-help { font-size: 11px; }
+  .anatomy-term-list { max-height: 230px; }
+  .anatomy-term-item { min-height: 46px; padding: 10px 11px; }
+  .anatomy-term-item b { font-size: 14px; }
+  .anatomy-term-item small { font-size: 11px; }
+  .anatomy-detail { margin-top: 10px; padding: 15px; border-radius: 13px; }
+  .anatomy-detail-title > span { font-size: 11px; }
+  .anatomy-detail-title h3 { font-size: 18px; }
+  .anatomy-detail-title small { font-size: 11px; }
+  .anatomy-detail p { font-size: 14px; line-height: 1.75; }
+  .anatomy-detail .anatomy-alias, .anatomy-detail .anatomy-entry-note { font-size: 12px; }
+  .anatomy-quiz-progress { font-size: 11px; }
+  .anatomy-question-card { margin-top: 13px; }
+  .anatomy-question-title { font-size: 16px; }
+}

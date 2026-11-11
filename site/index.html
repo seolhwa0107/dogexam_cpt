@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261110-8" />
+    <link rel="stylesheet" href="./styles.css?v=20261111-2" />
   </head>
   <body data-mode="practice">
     <div class="page-shell">
@@ -22,6 +22,7 @@
           <button class="nav-button is-active" type="button" data-mode="practice">문제 풀이</button>
           <button class="nav-button" type="button" data-mode="mock">모의시험</button>
           <button class="nav-button" type="button" data-mode="terms">트리밍 용어</button>
+          <button class="nav-button" type="button" data-mode="anatomy">견체 정리</button>
           <button class="nav-button" type="button" data-mode="dashboard">성적 대시보드</button>
         </nav>
         <div class="topbar-meta"><span class="live-dot"></span><span>3급 필기 준비</span></div>
@@ -46,6 +47,7 @@
           <button type="button" class="mode-tab is-active" role="tab" aria-selected="true" data-mode="practice">문제 풀이</button>
           <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="mock">모의시험</button>
           <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="terms">트리밍 용어</button>
+          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="anatomy">견체 정리</button>
           <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="dashboard">성적 현황</button>
         </div>
 
@@ -147,6 +149,36 @@
               <p class="local-note"><span aria-hidden="true">◉</span> 용어 퀴즈 진도와 답은 이 브라우저에 저장됩니다.</p>
             </section>
 
+            <section id="anatomyPanel" class="panel-view anatomy-panel hidden">
+              <div class="section-heading anatomy-heading">
+                <div><div class="section-kicker"><span class="section-bar"></span> CANINE ANATOMY</div><h2>그림으로 익히는 견체 정리</h2><p class="section-description">견체의 부위와 골격 명칭을 살펴보고, 그림 문제로 복습해 보세요.</p></div>
+                <div class="mock-emblem anatomy-emblem" aria-hidden="true"><span>✳</span><small>STUDY</small></div>
+              </div>
+              <div class="term-view-tabs anatomy-view-tabs" role="tablist" aria-label="견체 학습 방식">
+                <button type="button" class="term-view-tab is-active" role="tab" aria-selected="true" aria-controls="anatomyStudy" data-anatomy-view="study">부위별 설명</button>
+                <button type="button" class="term-view-tab" role="tab" aria-selected="false" aria-controls="anatomyQuiz" data-anatomy-view="quiz">그림 문제 풀이</button>
+              </div>
+              <p class="anatomy-reference-note">그림은 원본을 바탕으로 재구성한 참고도입니다. 표시 위치와 뼈의 세부 형태는 원본 자료와 함께 확인해 주세요.</p>
+              <div id="anatomyLoading" class="availability-card" role="status"><span class="availability-icon">⌁</span><div class="availability-copy"><b>견체 자료를 불러오고 있어요.</b></div></div>
+              <div id="anatomyError" class="availability-card hidden" role="status"><span class="availability-icon">⌁</span><div class="availability-copy"><b>견체 자료를 불러오지 못했어요.</b><p>잠시 후 다시 접속해 주세요.</p></div></div>
+              <div id="anatomyContent" class="hidden">
+                <div class="anatomy-topic-bar"><label for="anatomyCategory">학습 주제</label><select id="anatomyCategory"></select><span id="anatomyCategoryCount"></span></div>
+                <section id="anatomyStudy" class="anatomy-study" aria-label="견체 부위별 설명">
+                  <div class="anatomy-study-grid">
+                    <div id="anatomyStudyVisual" class="anatomy-study-visual"></div>
+                    <div class="anatomy-terms-pane"><label class="anatomy-search" for="anatomySearch">부위 찾기<input id="anatomySearch" type="search" placeholder="명칭 또는 설명 검색" autocomplete="off" /></label><p class="anatomy-list-help">명칭을 선택하면 그림에서 위치를 볼 수 있어요.</p><div id="anatomyTermList" class="anatomy-term-list" aria-label="부위 목록"></div></div>
+                  </div>
+                  <div id="anatomyDetail" class="anatomy-detail" aria-live="polite"></div>
+                </section>
+                <section id="anatomyQuiz" class="anatomy-quiz hidden" aria-label="견체 그림 문제 풀이">
+                  <div id="anatomyQuizProgress" class="progress-meta anatomy-quiz-progress"></div>
+                  <div class="progress-track"><span id="anatomyQuizBar"></span></div>
+                  <div id="anatomyQuestion"></div>
+                </section>
+              </div>
+              <p class="local-note"><span aria-hidden="true">◉</span> 그림 문제의 풀이 기록은 이 브라우저에 저장됩니다.</p>
+            </section>
+
             <section id="dashboardPanel" class="panel-view dashboard-panel hidden">
               <div class="section-heading dashboard-heading">
                 <div><div class="section-kicker"><span class="section-bar"></span> MY RECORD</div><h2>성적과 약점을 확인해요.</h2><p class="section-description">채점한 모의고사 기록을 모아 취약한 챕터를 보여드려요.</p></div>
@@ -184,6 +216,7 @@
 
       <footer class="footer"><a class="footer-brand" href="#top">DOG<span>CPT</span></a><span>반려견스타일리스트 3급 필기 연습</span><span class="footer-right">BUILD YOUR CONFIDENCE <i>✳</i></span></footer>
     </div>
-    <script src="./app.js?v=20261111-1" defer></script>
+    <script src="./app.js?v=20261111-2" defer></script>
+    <script src="./anatomy.js?v=20261111-2" defer></script>
   </body>
 </html>
