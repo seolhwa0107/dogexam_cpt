@@ -16,7 +16,7 @@ const OFFICIAL_EXAM_DURATION_SECONDS = 60 * 60;
 const STORAGE_KEY = "dogexam-cpt-progress-v1";
 const EXAM_HISTORY_KEY = "dogexam-cpt-exam-history-v1";
 const TERMS_PROGRESS_KEY = "dogexam-cpt-terms-progress-v1";
-const DATA_VERSION = "2026-11-11-1";
+const DATA_VERSION = "2026-11-12-1";
 const TERM_CATEGORIES = [
   { key: "trim", title: "트리밍" },
   { key: "coat", title: "피모" },
@@ -28,6 +28,9 @@ const state = {
   terms: [],
   termsLoaded: false,
   termsError: false,
+  anatomy: null,
+  anatomyLoaded: false,
+  anatomyError: false,
   termsProgress: readTermsProgress(),
   answers: readProgress(),
   examHistory: readExamHistory(),
@@ -490,14 +493,140 @@ function subjectPool(subject) {
     });
   });
 }
+function mockTermPool() {
+  return level3Terms().filter(function (term) {
+    const name = term.term.split(" (")[0].trim();
+    return name && !term.defn.toLocaleLowerCase("ko").includes(name.toLocaleLowerCase("ko"));
+  });
+}
+function anatomyQuizEntries() {
+  if (!state.anatomy || !Array.isArray(state.anatomy.categories)) return [];
+  return state.anatomy.categories.filter(function (category) { return category.id !== "compare"; }).flatMap(function (category) {
+    const figures = new Map((category.figures || []).map(function (figure) { return [figure.id, figure]; }));
+    return (category.entries || []).filter(function (entry) {
+      return entry.quiz && Array.isArray(entry.positions) && entry.positions.some(function (point) {
+        const figure = figures.get(point.image_id);
+        return figure && Number.isFinite(Number(point.x)) && Number.isFinite(Number(point.y));
+      });
+    }).map(function (entry) {
+      const point = entry.positions.find(function (position) {
+        return figures.has(position.image_id) && Number.isFinite(Number(position.x)) && Number.isFinite(Number(position.y));
+      });
+      return { category: category, entry: entry, point: point, figure: figures.get(point.image_id) };
+    });
+  });
+}
+function supplementaryMockReady() {
+  return state.termsLoaded && state.anatomyLoaded && mockTermPool().length >= 3 && anatomyQuizEntries().length >= 3;
+}
+function mockAnswerKey(item) {
+  return item && item.answerKey !== undefined ? item.answerKey : chapterAnswers(item.chapter)[item.question.id];
+}
 function fullMockReady() {
-  return EXAM_SUBJECTS.every(function (subject) { return subjectPool(subject).length >= subject.questionCount; });
+  return EXAM_SUBJECTS.every(function (subject) {
+    if (subject.key === "general1") return subjectPool(subject).length >= 15 && supplementaryMockReady();
+    return subjectPool(subject).length >= subject.questionCount;
+  });
+}
+function uniqueAnatomyChoices(entries, answerEntry) {
+  function tokens(entry) {
+    return new Set([entry.name].concat(entry.aliases || []).map(function (name) {
+      return String(name).toLocaleLowerCase("ko").replace(/[\s·()_-]/g, "");
+    }).filter(Boolean));
+  }
+  function overlaps(first, second) {
+    const secondTokens = tokens(second);
+    return Array.from(tokens(first)).some(function (token) { return secondTokens.has(token); });
+  }
+  const picked = [answerEntry];
+  shuffle(entries.filter(function (entry) { return !overlaps(entry, answerEntry); })).forEach(function (entry) {
+    if (picked.length < 5 && !picked.some(function (selected) { return overlaps(selected, entry); })) picked.push(entry);
+  });
+  if (picked.length < 5) {
+    shuffle(entries.filter(function (entry) { return !picked.some(function (selected) { return selected.name === entry.name; }); })).forEach(function (entry) {
+      if (picked.length < 5) picked.push(entry);
+    });
+  }
+  return picked.length === 5 ? shuffle(picked.map(function (entry) { return entry.name; })) : [];
+}
+function termMockItem(term) {
+  const candidates = mockTermPool().filter(function (other) { return other.id !== term.id; });
+  const optionTerms = [term].concat(shuffle(candidates).slice(0, 4));
+  const choices = shuffle(optionTerms.map(function (entry) { return entry.term; })).map(function (text, index) {
+    return { label: ["①", "②", "③", "④", "⑤"][index], text: text };
+  });
+  const key = choices.find(function (choice) { return choice.text === term.term; }).label;
+  const category = TERM_CATEGORIES.find(function (entry) { return entry.key === term.cat; });
+  return {
+    chapter: 6,
+    subject: "general1",
+    subjectTitle: "반려견일반미용1",
+    studyArea: "3급 용어 · " + (category ? category.title : "트리밍 용어"),
+    answerKey: key,
+    question: {
+      id: "mock-term-" + term.id,
+      number: "용어",
+      prompt: term.defn + "\n이 설명에 해당하는 용어는 무엇인가요?",
+      choices: choices,
+      status: "ready"
+    }
+  };
+}
+function anatomyMockItem(candidate) {
+  const categoryEntries = candidate.category.entries.filter(function (entry) {
+    return entry.quiz && Array.isArray(entry.positions) && entry.positions.some(function (point) {
+      return candidate.category.figures.some(function (figure) { return figure.id === point.image_id; });
+    });
+  });
+  const optionNames = uniqueAnatomyChoices(categoryEntries, candidate.entry);
+  if (optionNames.length !== 5) return null;
+  const choices = shuffle(optionNames).map(function (text, index) {
+    return { label: ["①", "②", "③", "④", "⑤"][index], text: text };
+  });
+  const key = choices.find(function (choice) { return choice.text === candidate.entry.name; }).label;
+  const point = candidate.entry.positions.find(function (position) { return position.image_id === candidate.figure.id; });
+  return {
+    chapter: 6,
+    subject: "general1",
+    subjectTitle: "반려견일반미용1",
+    studyArea: "견체 정리 · " + candidate.category.title,
+    answerKey: key,
+    question: {
+      id: "mock-anatomy-" + candidate.entry.id,
+      number: "견체",
+      prompt: "그림에서 표시된 부위의 명칭은 무엇인가요?",
+      choices: choices,
+      image: {
+        src: candidate.figure.src,
+        width: candidate.figure.width,
+        height: candidate.figure.height,
+        title: candidate.figure.title,
+        x: point.x,
+        y: point.y
+      },
+      status: "ready"
+    }
+  };
+}
+function generalSupplementItems() {
+  const termCount = Math.random() < 0.5 ? 2 : 3;
+  const terms = shuffle(mockTermPool()).slice(0, termCount).map(termMockItem);
+  const anatomy = shuffle(anatomyQuizEntries()).slice(0, 5 - termCount).map(anatomyMockItem).filter(Boolean);
+  const items = terms.concat(anatomy);
+  return items.length === 5 ? shuffle(items) : [];
+
 }
 function renderMockAvailability() {
   const fullReady = fullMockReady();
   const card = document.getElementById("mockAvailability");
+  const termCount = mockTermPool().length;
+  const anatomyCount = anatomyQuizEntries().length;
   const subjectSummary = EXAM_SUBJECTS.map(function (subject) {
     const available = subjectPool(subject).length;
+    if (subject.key === "general1") {
+      const baseCount = Math.min(15, available);
+      return subject.title + " 20문항 (기출 " + baseCount + "/15 + 용어 " + termCount + " · 견체 " + anatomyCount + " 보충 후보)";
+    }
     return subject.title + " " + subject.questionCount + "문항" + (fullReady ? "" : " (" + available + "문항 채점 가능)");
   }).join(" · ");
   const chapterButtons = CHAPTERS.map(function (chapter) {
@@ -510,10 +639,11 @@ function renderMockAvailability() {
   }).join("");
   const chapterActions = fullReady ? chapterButtons : practiceButtons + chapterButtons;
   if (fullReady) {
-    card.innerHTML = '<span class="availability-icon">✓</span><div class="availability-copy"><b>정식 3급 필기 모의시험을 시작할 수 있어요.</b><p>공식 과목 구성과 동일하게 50문항을 60분 동안 풉니다. 과목별 문제 수는 20 · 10 · 20문항입니다.</p><div class="availability-meta">' + subjectSummary + '</div><div class="availability-actions"><button type="button" id="startFullMock" class="primary">정식 CBT 시작 · 50문항 ↗</button>' + chapterActions + '</div></div>';
+    card.innerHTML = '<span class="availability-icon">✓</span><div class="availability-copy"><b>정식 3급 필기 모의시험을 시작할 수 있어요.</b><p>공식 구성대로 50문항을 60분 동안 풀어요. 반려견일반미용1의 20문항은 챕터 문제 15개와 3급 트리밍 용어·견체 문제 5개로 구성하며, 보충 문제는 매 회 2+3개 또는 3+2개로 섞습니다.</p><div class="availability-meta">' + subjectSummary + '</div><div class="availability-actions"><button type="button" id="startFullMock" class="primary">정식 CBT 시작 · 50문항 ↗</button>' + chapterActions + '</div></div>';
     document.getElementById("startFullMock").addEventListener("click", startFullMock);
   } else {
-    card.innerHTML = '<span class="availability-icon">⌁</span><div class="availability-copy"><b>정식 모의시험은 과목별 정답 자료가 더 필요해요.</b><p>공식 모의시험은 각 과목에서 정답이 확인된 문제를 정해진 문항 수만큼 출제합니다. 챕터별 연습은 자료가 있는 범위에서 계속할 수 있어요.</p><div class="availability-meta">' + subjectSummary + '</div><div class="availability-actions">' + chapterActions + '</div></div>';
+    const isLoadingSupplement = !state.termsLoaded || !state.anatomyLoaded;
+    card.innerHTML = '<span class="availability-icon">⌁</span><div class="availability-copy"><b>정식 모의시험을 준비하고 있어요.</b><p>' + (isLoadingSupplement ? '3급 트리밍 용어와 견체 정리 자료를 불러오고 있어요.' : '공식 과목 문항과 트리밍 용어·견체 보충 문제의 정답 자료를 확인하고 있어요. 자료가 준비된 챕터 연습은 계속할 수 있어요.') + '</p><div class="availability-meta">' + subjectSummary + '</div><div class="availability-actions">' + chapterActions + '</div></div>';
     card.querySelectorAll("[data-chapter-practice]").forEach(function (button) {
       button.addEventListener("click", function () { startChapterMock(Number(button.dataset.chapterPractice), false); });
     });
@@ -591,6 +721,10 @@ function renderDashboard() {
 }
 function startFullMock() {
   const items = EXAM_SUBJECTS.flatMap(function (subject) {
+    if (subject.key === "general1") {
+      const chapterItems = shuffle(subjectPool(subject)).slice(0, 15);
+      return shuffle(chapterItems.concat(generalSupplementItems()));
+    }
     return shuffle(subjectPool(subject)).slice(0, subject.questionCount);
   });
   beginMock(items, true, true);
@@ -639,11 +773,14 @@ function renderAttempt() {
   const correct = null;
   const subject = EXAM_SUBJECTS.find(function (entry) { return entry.key === item.subject; }) || EXAM_SUBJECTS.find(function (entry) { return entry.chapters.includes(item.chapter); });
   document.getElementById("attemptSubject").textContent = item.subjectTitle || (subject ? subject.title : "단원 연습");
-  document.getElementById("attemptChapter").textContent = "챕터 " + item.chapter + " · " + (chapterData(item.chapter).title || "");
+  document.getElementById("attemptChapter").textContent = item.studyArea || ("챕터 " + item.chapter + " · " + (chapterData(item.chapter) ? chapterData(item.chapter).title : ""));
   document.getElementById("attemptTimer").classList.toggle("hidden", !attempt.isOfficial);
   document.getElementById("attemptPosition").textContent = String(attempt.index + 1).padStart(2, "0") + " / " + String(attempt.items.length).padStart(2, "0");
   document.getElementById("attemptProgressBar").style.width = ((attempt.index + 1) * 100 / attempt.items.length) + "%";
   document.getElementById("attemptPrompt").textContent = item.question.prompt;
+  const visual = document.getElementById("attemptVisual");
+  visual.innerHTML = item.question.image ? anatomyFigureMarkup(item.question.image) : "";
+  visual.classList.toggle("hidden", !item.question.image);
   renderChoices(document.getElementById("attemptChoices"), item.question, saved, correct, false);
   const feedback = document.getElementById("attemptFeedback");
   feedback.className = "answer-feedback";
@@ -651,7 +788,7 @@ function renderAttempt() {
   document.querySelectorAll("#attemptChoices [data-choice-index]").forEach(function (button) {
     button.addEventListener("click", function () {
       const index = Number(button.dataset.choiceIndex);
-      const key = chapterAnswers(item.chapter)[item.question.id];
+      const key = mockAnswerKey(item);
       if (Array.isArray(key)) {
         const selectedOptions = selectionIndexes(item.question, attempt.responses[item.question.id]);
         attempt.responses[item.question.id] = selectedOptions.includes(index)
@@ -668,6 +805,13 @@ function renderAttempt() {
   document.getElementById("attemptNext").querySelector("span").textContent = attempt.index >= attempt.items.length - 1 ? "마지막" : "다음";
   document.getElementById("submitMock").textContent = attempt.index === attempt.items.length - 1 ? "시험 제출하기 ↗" : "시험 제출하기 ·";
 }
+function anatomyFigureMarkup(image) {
+  if (!image || !image.src || !Number(image.width) || !Number(image.height)) return "";
+  const maxWidth = Math.min(680, Math.round(image.width / image.height * 410));
+  const x = Math.max(0, Math.min(100, Number(image.x) * 100));
+  const y = Math.max(0, Math.min(100, Number(image.y) * 100));
+  return '<div class="anatomy-figure-stage"><div class="anatomy-figure" style="max-width:' + maxWidth + 'px"><img src="' + escapeHTML(image.src) + '" alt="견체 그림에서 표시된 위치를 확인하세요." loading="lazy"><span class="anatomy-marker" style="left:' + x + '%;top:' + y + '%" aria-hidden="true"><span></span></span></div></div>';
+}
 function responseLabels(item, response) {
   return selectionIndexes(item.question, response).map(function (index) {
     const choice = item.question.choices[index];
@@ -676,7 +820,7 @@ function responseLabels(item, response) {
 }
 function renderWrongNotes(attempt) {
   const notes = attempt.items.map(function (item, index) {
-    const key = chapterAnswers(item.chapter)[item.question.id];
+    const key = mockAnswerKey(item);
     if (responseIsCorrect(item.question, attempt.responses[item.question.id], key)) return null;
     const chosen = responseLabels(item, attempt.responses[item.question.id]);
     const correct = isGradeableKey(item.question, key)
@@ -686,7 +830,8 @@ function renderWrongNotes(attempt) {
       })
       : ["정답 확인 중"];
     const data = chapterData(item.chapter);
-    return '<article class="wrong-note-item"><div class="wrong-meta"><b>시험 ' + String(index + 1).padStart(2, "0") + '번 · 챕터 ' + item.chapter + ' ' + escapeHTML(data ? data.title : "") + ' · 문제 ' + escapeHTML(item.question.number) + '</b></div><p class="wrong-prompt">' + escapeHTML(item.question.prompt) + '</p><p class="wrong-answer-line is-yours"><b>내 답</b><span>' + escapeHTML(chosen.length ? chosen.join(" / ") : "미응답") + '</span></p><p class="wrong-answer-line is-correct-answer"><b>정답</b><span>' + escapeHTML(correct.join(" / ")) + '</span></p></article>';
+    const label = item.studyArea || ("챕터 " + item.chapter + " " + (data ? data.title : ""));
+    return '<article class="wrong-note-item"><div class="wrong-meta"><b>시험 ' + String(index + 1).padStart(2, "0") + '번 · ' + escapeHTML(label) + ' · ' + escapeHTML(item.question.number) + '</b></div><p class="wrong-prompt">' + escapeHTML(item.question.prompt) + '</p>' + (item.question.image ? anatomyFigureMarkup(item.question.image) : '') + '<p class="wrong-answer-line is-yours"><b>내 답</b><span>' + escapeHTML(chosen.length ? chosen.join(" / ") : "미응답") + '</span></p><p class="wrong-answer-line is-correct-answer"><b>정답</b><span>' + escapeHTML(correct.join(" / ")) + '</span></p></article>';
   }).filter(Boolean);
   if (!notes.length) return '<div class="wrong-note-empty"><b>모두 맞혔어요!</b><span>이번 시험에서 틀린 문제가 없습니다.</span></div>';
   return '<section class="wrong-note"><div class="wrong-note-heading"><div><span class="index-kicker">REVIEW</span><h3>오답노트</h3></div><span class="wrong-count">' + notes.length + '문항</span></div><div class="wrong-note-list">' + notes.join("") + '</div></section>';
@@ -727,7 +872,7 @@ function submitMock(timeExpired) {
       if (!subjectResults.has(item.subject)) subjectResults.set(item.subject, { title: item.subjectTitle, correct: 0, total: 0 });
       subjectResults.get(item.subject).total += 1;
     }
-    const key = chapterAnswers(item.chapter)[item.question.id];
+    const key = mockAnswerKey(item);
     if (responseIsCorrect(item.question, attempt.responses[item.question.id], key)) {
       chapterResults.get(item.chapter).correct += 1;
       if (item.subject) subjectResults.get(item.subject).correct += 1;
@@ -833,6 +978,21 @@ async function loadTerms() {
   }
   state.termsLoaded = true;
   renderTermsSection();
+  renderMockAvailability();
+}
+async function loadMockAnatomy() {
+  try {
+    const response = await fetch("./data/anatomy.json?v=" + DATA_VERSION);
+    if (!response.ok) throw new Error("Anatomy data request failed");
+    state.anatomy = await response.json();
+    state.anatomyError = anatomyQuizEntries().length === 0;
+  } catch (error) {
+    state.anatomy = null;
+    state.anatomyError = true;
+    console.info("Canine anatomy data is not available for the mock exam yet.");
+  }
+  state.anatomyLoaded = true;
+  renderMockAvailability();
 }
 
 document.querySelectorAll("button[data-mode]").forEach(function (button) { button.addEventListener("click", function () { setMode(button.dataset.mode); }); });
@@ -920,3 +1080,4 @@ document.getElementById("unansweredDialog").addEventListener("click", function (
 showFilePreviewNotice();
 loadChapters();
 loadTerms();
+loadMockAnatomy();
