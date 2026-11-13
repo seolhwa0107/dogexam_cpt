@@ -67,7 +67,7 @@
     if (revealSelection) {
       const active = list.querySelector('[data-anatomy-term="' + esc(state.selected) + '"]');
       if (active) {
-        active.focus({ preventScroll: true });
+        if (revealSelection === "focus") active.focus({ preventScroll: true });
         const activeRect = active.getBoundingClientRect();
         const listRect = list.getBoundingClientRect();
         if (activeRect.left < listRect.left) list.scrollBy({ left: activeRect.left - listRect.left - 8, behavior: "smooth" });
@@ -103,7 +103,7 @@
     if (!entry) return;
     state.selected = entry.id;
     if (entry.positions.length) state.figure = entry.positions[0].image_id;
-    renderStudyVisual(); renderStudyList(!!revealSelection); renderDetail(); updateCarouselControls();
+    renderStudyVisual(); renderStudyList(revealSelection); renderDetail(); updateCarouselControls();
     if (direction) animateStudyCard(direction);
   }
   function moveStudyEntry(direction) {
@@ -112,7 +112,7 @@
     const index = entries.findIndex(function (entry) { return entry.id === state.selected; });
     const nextIndex = index + direction;
     if (index < 0 || nextIndex < 0 || nextIndex >= entries.length) return;
-    showStudyEntry(entries[nextIndex], direction, false);
+    showStudyEntry(entries[nextIndex], direction, "reveal");
   }
   function sessionFor(c) {
     const pool = c.entries.filter(function (entry) { return entry.quiz && entry.positions && entry.positions.length; });
@@ -191,7 +191,7 @@
   $("anatomySearch").addEventListener("input", function (event) {
     state.search = event.target.value;
     const c = category(); const entries = c && studyEntries(c);
-    if (entries && entries.length && !entries.some(function (entry) { return entry.id === state.selected; })) showStudyEntry(entries[0], 0, false);
+    if (entries && entries.length && !entries.some(function (entry) { return entry.id === state.selected; })) showStudyEntry(entries[0], 0, "reveal");
     else { renderStudyList(); updateCarouselControls(); }
   });
   $("anatomyStudyVisual").addEventListener("change", function (event) { if (event.target.id === "anatomyFigureSelect") { state.figure = event.target.value; renderStudyVisual(); } });
@@ -202,7 +202,7 @@
   $("anatomyCarouselNext").addEventListener("click", function () { moveStudyEntry(1); });
   $("anatomyTermList").addEventListener("click", function (event) {
     const button = event.target.closest("[data-anatomy-term]"); const c = category(); if (!button || !c) return;
-    showStudyEntry(entryFor(c, button.dataset.anatomyTerm), 0, true);
+    showStudyEntry(entryFor(c, button.dataset.anatomyTerm), 0, "focus");
   });
   const studyCard = $("anatomyStudyCard"); let studyPointer = null;
   studyCard.addEventListener("pointerdown", function (event) {
