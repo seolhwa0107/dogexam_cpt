@@ -24,6 +24,10 @@
   function equivalents(entry) { return new Set([entry.name].concat(entry.aliases || []).map(norm).filter(Boolean)); }
   function overlaps(a, b) { return Array.from(equivalents(a)).some(function (value) { return equivalents(b).has(value); }); }
   function detailName(entry) { return entry.name + (entry.qualifier ? " · " + entry.qualifier : ""); }
+  function studyEntries(c) {
+    const q = state.search.trim().toLocaleLowerCase("ko");
+    return c.entries.filter(function (entry) { return !q || [entry.name, entry.english, entry.description].concat(entry.aliases || []).join(" ").toLocaleLowerCase("ko").includes(q); });
+  }
   function figureMarkup(figure, point, study) {
     if (!figure) return '<div class="anatomy-figure-empty">표시할 그림이 없어요.</div>';
     const maxWidth = Math.min(680, Math.round(figure.width / figure.height * 410));
@@ -51,25 +55,26 @@
   }
   function renderStudyList(revealSelection) {
     const c = category(); if (!c) return;
-    const q = state.search.trim().toLocaleLowerCase("ko");
-    const entries = c.entries.filter(function (entry) { return !q || [entry.name, entry.english, entry.description].concat(entry.aliases || []).join(" ").toLocaleLowerCase("ko").includes(q); });
-    $("anatomyTermList").innerHTML = entries.map(function (entry, index) {
+    const list = $("anatomyTermList"); const previousScroll = list.scrollLeft;
+    const entries = studyEntries(c);
+    list.innerHTML = entries.map(function (entry, index) {
       const active = entry.id === state.selected;
       return '<button type="button" class="anatomy-term-item' + (active ? ' is-active' : '') + '" data-anatomy-term="' + esc(entry.id) + '" aria-pressed="' + active + '" aria-label="' + esc(detailName(entry)) + (entry.english ? ' · ' + esc(entry.english) : '') + ' · ' + (index + 1) + ' / ' + entries.length + '"><span>' + esc(detailName(entry)) + '</span></button>';
     }).join("");
+    list.scrollLeft = previousScroll;
     $("anatomyListEmpty").classList.toggle("hidden", entries.length > 0);
     updateStudyTermControls();
     if (revealSelection) {
-      const active = $("anatomyTermList").querySelector('[data-anatomy-term="' + esc(state.selected) + '"]');
+      const active = list.querySelector('[data-anatomy-term="' + esc(state.selected) + '"]');
       if (active) {
         active.focus({ preventScroll: true });
-        const list = $("anatomyTermList");
         const activeRect = active.getBoundingClientRect();
         const listRect = list.getBoundingClientRect();
         if (activeRect.left < listRect.left) list.scrollBy({ left: activeRect.left - listRect.left - 8, behavior: "smooth" });
         else if (activeRect.right > listRect.right) list.scrollBy({ left: activeRect.right - listRect.right + 8, behavior: "smooth" });
       }
     }
+    updateCarouselControls();
   }
   function renderDetail() {
     const c = category(); const entry = c && entryFor(c, state.selected);
@@ -77,6 +82,37 @@
     const aliases = (entry.aliases || []).filter(function (a) { return norm(a) !== norm(entry.name); });
     const index = c.entries.findIndex(function (item) { return item.id === entry.id; });
     $("anatomyDetail").innerHTML = '<div class="anatomy-detail-top"><div class="anatomy-detail-title"><span>선택한 부위</span><h3>' + esc(detailName(entry)) + '</h3>' + (entry.english ? '<small>' + esc(entry.english) + '</small>' : '') + '</div><span class="anatomy-detail-count">' + String(index + 1).padStart(2, "0") + ' / ' + String(c.entries.length).padStart(2, "0") + '</span></div><div class="anatomy-detail-copy"><span class="anatomy-detail-label">부위 설명</span><p>' + esc(entry.description) + '</p>' + (aliases.length ? '<p class="anatomy-alias">함께 알아두기 · ' + aliases.map(esc).join(', ') + '</p>' : '') + (entry.note ? '<p class="anatomy-entry-note">' + esc(entry.note) + '</p>' : '') + '</div>';
+  }
+  function updateCarouselControls() {
+    const c = category(); if (!c) return;
+    const entries = studyEntries(c);
+    const index = entries.findIndex(function (entry) { return entry.id === state.selected; });
+    const position = $("anatomyCarouselPosition");
+    position.textContent = entries.length ? String(index >= 0 ? index + 1 : 0).padStart(2, "0") + ' / ' + String(entries.length).padStart(2, "0") : '00 / 00';
+    $("anatomyCarouselPrev").disabled = index <= 0;
+    $("anatomyCarouselNext").disabled = index < 0 || index >= entries.length - 1;
+  }
+  function animateStudyCard(direction) {
+    const card = $("anatomyStudyCard");
+    card.classList.remove("slide-from-next", "slide-from-prev");
+    void card.offsetWidth;
+    card.classList.add(direction > 0 ? "slide-from-next" : "slide-from-prev");
+    card.addEventListener("animationend", function () { card.classList.remove("slide-from-next", "slide-from-prev"); }, { once: true });
+  }
+  function showStudyEntry(entry, direction, revealSelection) {
+    if (!entry) return;
+    state.selected = entry.id;
+    if (entry.positions.length) state.figure = entry.positions[0].image_id;
+    renderStudyVisual(); renderStudyList(!!revealSelection); renderDetail(); updateCarouselControls();
+    if (direction) animateStudyCard(direction);
+  }
+  function moveStudyEntry(direction) {
+    const c = category(); if (!c) return;
+    const entries = studyEntries(c);
+    const index = entries.findIndex(function (entry) { return entry.id === state.selected; });
+    const nextIndex = index + direction;
+    if (index < 0 || nextIndex < 0 || nextIndex >= entries.length) return;
+    showStudyEntry(entries[nextIndex], direction, false);
   }
   function sessionFor(c) {
     const pool = c.entries.filter(function (entry) { return entry.quiz && entry.positions && entry.positions.length; });
@@ -152,17 +188,47 @@
   window.renderAnatomySection = function () { if (!state.data && !state.error) load(); else render(); };
   document.querySelectorAll("[data-anatomy-view]").forEach(function (button) { button.addEventListener("click", function () { state.view = button.dataset.anatomyView === "quiz" ? "quiz" : "study"; render(); }); });
   $("anatomyCategory").addEventListener("change", function (event) { state.category = event.target.value; state.selected = null; state.figure = null; state.search = ""; render(); });
-  $("anatomySearch").addEventListener("input", function (event) { state.search = event.target.value; renderStudyList(); });
+  $("anatomySearch").addEventListener("input", function (event) {
+    state.search = event.target.value;
+    const c = category(); const entries = c && studyEntries(c);
+    if (entries && entries.length && !entries.some(function (entry) { return entry.id === state.selected; })) showStudyEntry(entries[0], 0, false);
+    else { renderStudyList(); updateCarouselControls(); }
+  });
   $("anatomyStudyVisual").addEventListener("change", function (event) { if (event.target.id === "anatomyFigureSelect") { state.figure = event.target.value; renderStudyVisual(); } });
   $("anatomyTermList").addEventListener("scroll", updateStudyTermControls, { passive: true });
   $("anatomyTermPrev").addEventListener("click", function () { $("anatomyTermList").scrollBy({ left: -240, behavior: "smooth" }); });
   $("anatomyTermNext").addEventListener("click", function () { $("anatomyTermList").scrollBy({ left: 240, behavior: "smooth" }); });
+  $("anatomyCarouselPrev").addEventListener("click", function () { moveStudyEntry(-1); });
+  $("anatomyCarouselNext").addEventListener("click", function () { moveStudyEntry(1); });
   $("anatomyTermList").addEventListener("click", function (event) {
     const button = event.target.closest("[data-anatomy-term]"); const c = category(); if (!button || !c) return;
-    const entry = entryFor(c, button.dataset.anatomyTerm); if (!entry) return;
-    state.selected = entry.id; if (entry.positions.length) state.figure = entry.positions[0].image_id;
-    renderStudyVisual(); renderStudyList(true); renderDetail();
+    showStudyEntry(entryFor(c, button.dataset.anatomyTerm), 0, true);
   });
+  const studyCard = $("anatomyStudyCard"); let studyPointer = null;
+  studyCard.addEventListener("pointerdown", function (event) {
+    if (!event.isPrimary || (event.pointerType === "mouse" && event.button !== 0) || event.target.closest("button, select, input, a")) return;
+    studyPointer = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, dragging: false };
+  });
+  studyCard.addEventListener("pointermove", function (event) {
+    if (!studyPointer || studyPointer.id !== event.pointerId) return;
+    const dx = event.clientX - studyPointer.x; const dy = event.clientY - studyPointer.y;
+    if (!studyPointer.dragging && Math.abs(dx) > 9 && Math.abs(dx) > Math.abs(dy) * 1.15) {
+      studyPointer.dragging = true; studyCard.classList.add("is-dragging");
+      try { studyCard.setPointerCapture(event.pointerId); } catch (_) { /* Pointer capture is optional. */ }
+    }
+    if (studyPointer.dragging) {
+      studyPointer.dx = dx; event.preventDefault();
+      studyCard.style.setProperty("--anatomy-drag-x", Math.max(-88, Math.min(88, dx)) + "px");
+    }
+  });
+  function finishStudyPointer(event) {
+    if (!studyPointer || studyPointer.id !== event.pointerId) return;
+    const swipe = studyPointer; studyPointer = null;
+    studyCard.classList.remove("is-dragging"); studyCard.style.setProperty("--anatomy-drag-x", "0px");
+    if (swipe.dragging && Math.abs(swipe.dx) >= 52) moveStudyEntry(swipe.dx < 0 ? 1 : -1);
+  }
+  studyCard.addEventListener("pointerup", finishStudyPointer);
+  studyCard.addEventListener("pointercancel", finishStudyPointer);
   $("anatomyQuiz").addEventListener("click", function (event) {
     const c = category(); if (!c) return; const p = sessionFor(c);
     const answer = event.target.closest("[data-anatomy-answer]");

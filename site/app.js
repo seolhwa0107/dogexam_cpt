@@ -144,9 +144,33 @@ function answerCount(number) {
   const keys = chapterAnswers(number);
   return questions.filter(function (question) { return isAnswered(question, saved[question.id], keys[question.id]); }).length;
 }
+const MODE_LABELS = { practice: "문제 풀이", mock: "모의시험", terms: "트리밍 용어", anatomy: "견체 정리", dashboard: "성적 대시보드" };
+function closeModeMenu(returnFocus) {
+  const drawer = document.getElementById("modeDrawer");
+  const toggle = document.getElementById("modeMenuToggle");
+  if (!drawer || !toggle) return;
+  document.body.classList.remove("mode-menu-open");
+  drawer.setAttribute("aria-hidden", "true");
+  drawer.setAttribute("inert", "");
+  toggle.setAttribute("aria-expanded", "false");
+  if (returnFocus) toggle.focus();
+}
+function openModeMenu() {
+  const drawer = document.getElementById("modeDrawer");
+  const toggle = document.getElementById("modeMenuToggle");
+  if (!drawer || !toggle) return;
+  drawer.removeAttribute("inert");
+  drawer.setAttribute("aria-hidden", "false");
+  document.body.classList.add("mode-menu-open");
+  toggle.setAttribute("aria-expanded", "true");
+  document.getElementById("modeMenuClose").focus();
+}
 function setMode(mode) {
   state.mode = mode;
   document.body.dataset.mode = mode;
+  const modeLabel = MODE_LABELS[mode] || "학습 메뉴";
+  document.getElementById("currentModeLabel").textContent = modeLabel;
+  document.getElementById("modeMenuToggle").setAttribute("aria-label", "학습 카테고리 선택: " + modeLabel);
   document.querySelectorAll("button[data-mode]").forEach(function (button) {
     button.classList.toggle("is-active", button.dataset.mode === mode);
     if (button.hasAttribute("aria-selected")) button.setAttribute("aria-selected", String(button.dataset.mode === mode));
@@ -995,7 +1019,28 @@ async function loadMockAnatomy() {
   renderMockAvailability();
 }
 
-document.querySelectorAll("button[data-mode]").forEach(function (button) { button.addEventListener("click", function () { setMode(button.dataset.mode); }); });
+document.querySelectorAll("button[data-mode]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    setMode(button.dataset.mode);
+    if (button.closest("#modeDrawer")) closeModeMenu(true);
+  });
+});
+document.getElementById("modeMenuToggle").addEventListener("click", function () {
+  if (document.body.classList.contains("mode-menu-open")) closeModeMenu(false);
+  else openModeMenu();
+});
+document.getElementById("modeMenuClose").addEventListener("click", function () { closeModeMenu(true); });
+document.getElementById("modeMenuBackdrop").addEventListener("click", function () { closeModeMenu(true); });
+document.addEventListener("keydown", function (event) {
+  if (!document.body.classList.contains("mode-menu-open")) return;
+  if (event.key === "Escape") { event.preventDefault(); closeModeMenu(true); return; }
+  if (event.key !== "Tab") return;
+  const focusable = Array.from(document.querySelectorAll("#modeDrawer button:not(:disabled), #modeDrawer a[href], #modeDrawer [tabindex]:not([tabindex='-1'])"));
+  const first = focusable[0]; const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+});
+window.addEventListener("resize", function () { if (window.innerWidth > 600) closeModeMenu(false); });
 document.querySelectorAll("[data-term-view]").forEach(function (button) {
   button.addEventListener("click", function () {
     state.termView = button.dataset.termView === "quiz" ? "quiz" : "glossary";

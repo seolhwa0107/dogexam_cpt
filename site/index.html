@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261113-2" />
+    <link rel="stylesheet" href="./styles.css?v=20261113-3" />
   </head>
   <body data-mode="practice">
     <div class="page-shell">
@@ -25,8 +25,28 @@
           <button class="nav-button" type="button" data-mode="anatomy">견체 정리</button>
           <button class="nav-button" type="button" data-mode="dashboard">성적 대시보드</button>
         </nav>
+        <button type="button" id="modeMenuToggle" class="mode-menu-toggle" aria-expanded="false" aria-controls="modeDrawer" aria-label="학습 카테고리 메뉴 열기">
+          <span id="currentModeLabel">문제 풀이</span>
+          <span class="mode-menu-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
         <div class="topbar-meta"><span class="live-dot"></span><span>3급 필기 준비</span></div>
       </header>
+
+      <button type="button" id="modeMenuBackdrop" class="mode-menu-backdrop" aria-label="메뉴 닫기" tabindex="-1"></button>
+      <aside id="modeDrawer" class="mode-drawer" role="dialog" aria-modal="true" aria-labelledby="modeDrawerTitle" aria-hidden="true" inert>
+        <div class="mode-drawer-head">
+          <div><span class="section-kicker"><span class="section-bar"></span> STUDY MENU</span><h2 id="modeDrawerTitle">학습 카테고리</h2></div>
+          <button type="button" id="modeMenuClose" class="mode-menu-close" aria-label="메뉴 닫기">×</button>
+        </div>
+        <nav class="mode-drawer-list" aria-label="학습 카테고리 선택">
+          <button type="button" class="mode-drawer-item is-active" data-mode="practice"><span class="mode-drawer-icon">▤</span><span><b>문제 풀이</b><small>챕터별로 문제를 풀어요</small></span><span class="mode-drawer-arrow">↗</span></button>
+          <button type="button" class="mode-drawer-item" data-mode="mock"><span class="mode-drawer-icon">◷</span><span><b>모의시험</b><small>실전 구성으로 시험 보기</small></span><span class="mode-drawer-arrow">↗</span></button>
+          <button type="button" class="mode-drawer-item" data-mode="terms"><span class="mode-drawer-icon">✂</span><span><b>트리밍 용어</b><small>3급 용어 설명과 퀴즈</small></span><span class="mode-drawer-arrow">↗</span></button>
+          <button type="button" class="mode-drawer-item" data-mode="anatomy"><span class="mode-drawer-icon">⌁</span><span><b>견체 정리</b><small>부위별 그림과 명칭 학습</small></span><span class="mode-drawer-arrow">↗</span></button>
+          <button type="button" class="mode-drawer-item" data-mode="dashboard"><span class="mode-drawer-icon">▥</span><span><b>성적 대시보드</b><small>점수와 취약 영역 확인</small></span><span class="mode-drawer-arrow">↗</span></button>
+        </nav>
+        <p class="mode-drawer-note">학습 기록은 이 기기의 브라우저에 저장돼요.</p>
+      </aside>
 
       <main id="top">
         <section class="hero">
@@ -42,14 +62,6 @@
           </div>
           <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
         </section>
-
-        <div class="mode-tabs mobile-tabs" role="tablist" aria-label="학습 모드">
-          <button type="button" class="mode-tab is-active" role="tab" aria-selected="true" data-mode="practice">문제 풀이</button>
-          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="mock">모의시험</button>
-          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="terms">트리밍 용어</button>
-          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="anatomy">견체 정리</button>
-          <button type="button" class="mode-tab" role="tab" aria-selected="false" data-mode="dashboard">성적 현황</button>
-        </div>
 
         <div class="workspace">
           <aside class="chapter-rail" aria-label="챕터 선택">
@@ -165,9 +177,15 @@
               <div id="anatomyContent" class="hidden">
                 <div class="anatomy-topic-bar"><label for="anatomyCategory">학습 주제</label><select id="anatomyCategory"></select><span id="anatomyCategoryCount"></span></div>
                 <section id="anatomyStudy" class="anatomy-study" aria-label="견체 부위별 설명">
-                  <div class="anatomy-study-card">
+                  <div id="anatomyStudyCard" class="anatomy-study-card" role="group" aria-roledescription="carousel" aria-label="견체 명칭과 부위 설명">
                     <div id="anatomyStudyVisual" class="anatomy-study-visual"></div>
                     <div id="anatomyDetail" class="anatomy-detail" aria-live="polite"></div>
+                  </div>
+                  <div class="anatomy-carousel-controls" aria-label="견체 명칭 넘기기">
+                    <button type="button" id="anatomyCarouselPrev" class="anatomy-carousel-button" aria-label="이전 부위" disabled>‹</button>
+                    <span id="anatomyCarouselPosition" class="anatomy-carousel-position" aria-live="polite">01 / 01</span>
+                    <span class="anatomy-swipe-hint">카드를 좌우로 밀어 부위 이동</span>
+                    <button type="button" id="anatomyCarouselNext" class="anatomy-carousel-button" aria-label="다음 부위">›</button>
                   </div>
                   <div class="anatomy-term-browser">
                     <div class="anatomy-term-browser-head">
@@ -228,7 +246,7 @@
 
       <footer class="footer"><a class="footer-brand" href="#top">DOG<span>CPT</span></a><span>반려견스타일리스트 3급 필기 연습</span><span class="footer-right">BUILD YOUR CONFIDENCE <i>✳</i></span></footer>
     </div>
-    <script src="./app.js?v=20261112-1" defer></script>
-    <script src="./anatomy.js?v=20261113-1" defer></script>
+    <script src="./app.js?v=20261113-1" defer></script>
+    <script src="./anatomy.js?v=20261113-2" defer></script>
   </body>
 </html>
