@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   const KEY = "dogexam-cpt-anatomy-progress-v1";
-  const DATA_URL = "./data/anatomy.json?v=20261111-2";
+  const DATA_URL = "./data/anatomy.json?v=20261113-1";
   const $ = function (id) { return document.getElementById(id); };
   const state = { data: null, loading: false, error: false, category: "body", view: "study", selected: null, figure: null, search: "", progress: readProgress() };
   function readProgress() {
@@ -43,20 +43,40 @@
     const picker = c.figures.length > 1 ? '<label class="anatomy-figure-picker" for="anatomyFigureSelect">그림 선택<select id="anatomyFigureSelect">' + c.figures.map(function (f) { return '<option value="' + esc(f.id) + '"' + (f.id === state.figure ? ' selected' : '') + '>' + esc(f.title) + '</option>'; }).join("") + '</select></label>' : '<p class="anatomy-figure-caption">' + esc(figure ? figure.title : "") + '</p>';
     $("anatomyStudyVisual").innerHTML = picker + figureMarkup(figure, point, true) + '<p class="anatomy-figure-hint">' + (point ? '<span class="anatomy-dot"></span> 선택한 명칭의 위치' : '이 그림에는 선택한 부위의 표시 위치가 없어요.') + '</p>';
   }
-  function renderStudyList() {
+  function updateStudyTermControls() {
+    const list = $("anatomyTermList");
+    const maxScroll = Math.max(0, list.scrollWidth - list.clientWidth);
+    $("anatomyTermPrev").disabled = list.scrollLeft <= 2;
+    $("anatomyTermNext").disabled = maxScroll <= 2 || list.scrollLeft >= maxScroll - 2;
+  }
+  function renderStudyList(revealSelection) {
     const c = category(); if (!c) return;
     const q = state.search.trim().toLocaleLowerCase("ko");
     const entries = c.entries.filter(function (entry) { return !q || [entry.name, entry.english, entry.description].concat(entry.aliases || []).join(" ").toLocaleLowerCase("ko").includes(q); });
-    $("anatomyTermList").innerHTML = entries.length ? entries.map(function (entry) {
+    $("anatomyTermList").innerHTML = entries.map(function (entry, index) {
       const active = entry.id === state.selected;
-      return '<button type="button" class="anatomy-term-item' + (active ? ' is-active' : '') + '" data-anatomy-term="' + esc(entry.id) + '" aria-pressed="' + active + '"><span><b>' + esc(detailName(entry)) + '</b>' + (entry.english ? '<small>' + esc(entry.english) + '</small>' : '') + '</span><span aria-hidden="true">' + (active ? '●' : '↗') + '</span></button>';
-    }).join("") : '<div class="anatomy-list-empty">검색 결과가 없어요.</div>';
+      return '<button type="button" class="anatomy-term-item' + (active ? ' is-active' : '') + '" data-anatomy-term="' + esc(entry.id) + '" aria-pressed="' + active + '" aria-label="' + esc(detailName(entry)) + (entry.english ? ' · ' + esc(entry.english) : '') + ' · ' + (index + 1) + ' / ' + entries.length + '"><span>' + esc(detailName(entry)) + '</span></button>';
+    }).join("");
+    $("anatomyListEmpty").classList.toggle("hidden", entries.length > 0);
+    updateStudyTermControls();
+    if (revealSelection) {
+      const active = $("anatomyTermList").querySelector('[data-anatomy-term="' + esc(state.selected) + '"]');
+      if (active) {
+        active.focus({ preventScroll: true });
+        const list = $("anatomyTermList");
+        const activeRect = active.getBoundingClientRect();
+        const listRect = list.getBoundingClientRect();
+        if (activeRect.left < listRect.left) list.scrollBy({ left: activeRect.left - listRect.left - 8, behavior: "smooth" });
+        else if (activeRect.right > listRect.right) list.scrollBy({ left: activeRect.right - listRect.right + 8, behavior: "smooth" });
+      }
+    }
   }
   function renderDetail() {
     const c = category(); const entry = c && entryFor(c, state.selected);
     if (!entry) { $("anatomyDetail").innerHTML = ""; return; }
     const aliases = (entry.aliases || []).filter(function (a) { return norm(a) !== norm(entry.name); });
-    $("anatomyDetail").innerHTML = '<div class="anatomy-detail-title"><span>선택한 부위</span><h3>' + esc(detailName(entry)) + '</h3>' + (entry.english ? '<small>' + esc(entry.english) + '</small>' : '') + '</div><p>' + esc(entry.description) + '</p>' + (aliases.length ? '<p class="anatomy-alias">함께 알아두기 · ' + aliases.map(esc).join(', ') + '</p>' : '') + (entry.note ? '<p class="anatomy-entry-note">' + esc(entry.note) + '</p>' : '');
+    const index = c.entries.findIndex(function (item) { return item.id === entry.id; });
+    $("anatomyDetail").innerHTML = '<div class="anatomy-detail-top"><div class="anatomy-detail-title"><span>선택한 부위</span><h3>' + esc(detailName(entry)) + '</h3>' + (entry.english ? '<small>' + esc(entry.english) + '</small>' : '') + '</div><span class="anatomy-detail-count">' + String(index + 1).padStart(2, "0") + ' / ' + String(c.entries.length).padStart(2, "0") + '</span></div><div class="anatomy-detail-copy"><span class="anatomy-detail-label">부위 설명</span><p>' + esc(entry.description) + '</p>' + (aliases.length ? '<p class="anatomy-alias">함께 알아두기 · ' + aliases.map(esc).join(', ') + '</p>' : '') + (entry.note ? '<p class="anatomy-entry-note">' + esc(entry.note) + '</p>' : '') + '</div>';
   }
   function sessionFor(c) {
     const pool = c.entries.filter(function (entry) { return entry.quiz && entry.positions && entry.positions.length; });
@@ -134,11 +154,14 @@
   $("anatomyCategory").addEventListener("change", function (event) { state.category = event.target.value; state.selected = null; state.figure = null; state.search = ""; render(); });
   $("anatomySearch").addEventListener("input", function (event) { state.search = event.target.value; renderStudyList(); });
   $("anatomyStudyVisual").addEventListener("change", function (event) { if (event.target.id === "anatomyFigureSelect") { state.figure = event.target.value; renderStudyVisual(); } });
+  $("anatomyTermList").addEventListener("scroll", updateStudyTermControls, { passive: true });
+  $("anatomyTermPrev").addEventListener("click", function () { $("anatomyTermList").scrollBy({ left: -240, behavior: "smooth" }); });
+  $("anatomyTermNext").addEventListener("click", function () { $("anatomyTermList").scrollBy({ left: 240, behavior: "smooth" }); });
   $("anatomyTermList").addEventListener("click", function (event) {
     const button = event.target.closest("[data-anatomy-term]"); const c = category(); if (!button || !c) return;
     const entry = entryFor(c, button.dataset.anatomyTerm); if (!entry) return;
     state.selected = entry.id; if (entry.positions.length) state.figure = entry.positions[0].image_id;
-    renderStudyVisual(); renderStudyList(); renderDetail();
+    renderStudyVisual(); renderStudyList(true); renderDetail();
   });
   $("anatomyQuiz").addEventListener("click", function (event) {
     const c = category(); if (!c) return; const p = sessionFor(c);

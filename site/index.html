@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=20261112-1" />
+    <link rel="stylesheet" href="./styles.css?v=20261113-1" />
   </head>
   <body data-mode="practice">
     <div class="page-shell">
@@ -165,11 +165,22 @@
               <div id="anatomyContent" class="hidden">
                 <div class="anatomy-topic-bar"><label for="anatomyCategory">학습 주제</label><select id="anatomyCategory"></select><span id="anatomyCategoryCount"></span></div>
                 <section id="anatomyStudy" class="anatomy-study" aria-label="견체 부위별 설명">
-                  <div class="anatomy-study-grid">
+                  <div class="anatomy-study-card">
                     <div id="anatomyStudyVisual" class="anatomy-study-visual"></div>
-                    <div class="anatomy-terms-pane"><label class="anatomy-search" for="anatomySearch">부위 찾기<input id="anatomySearch" type="search" placeholder="명칭 또는 설명 검색" autocomplete="off" /></label><p class="anatomy-list-help">명칭을 선택하면 그림에서 위치를 볼 수 있어요.</p><div id="anatomyTermList" class="anatomy-term-list" aria-label="부위 목록"></div></div>
+                    <div id="anatomyDetail" class="anatomy-detail" aria-live="polite"></div>
                   </div>
-                  <div id="anatomyDetail" class="anatomy-detail" aria-live="polite"></div>
+                  <div class="anatomy-term-browser">
+                    <div class="anatomy-term-browser-head">
+                      <div><b>부위 명칭</b><span>칩을 선택하면 그림 위치와 설명이 함께 바뀌어요.</span></div>
+                      <label class="anatomy-search" for="anatomySearch"><span>명칭 찾기</span><input id="anatomySearch" type="search" placeholder="명칭 또는 설명 검색" autocomplete="off" /></label>
+                    </div>
+                    <div class="anatomy-term-picker">
+                      <button type="button" id="anatomyTermPrev" class="anatomy-term-scroll" aria-label="이전 명칭 보기" disabled>‹</button>
+                      <div id="anatomyTermList" class="anatomy-term-list" role="group" aria-label="부위 명칭 칩"></div>
+                      <button type="button" id="anatomyTermNext" class="anatomy-term-scroll" aria-label="다음 명칭 보기">›</button>
+                    </div>
+                    <p id="anatomyListEmpty" class="anatomy-list-empty hidden">검색 결과가 없어요.</p>
+                  </div>
                 </section>
                 <section id="anatomyQuiz" class="anatomy-quiz hidden" aria-label="견체 그림 문제 풀이">
                   <div id="anatomyQuizProgress" class="progress-meta anatomy-quiz-progress"></div>
@@ -218,6 +229,6 @@
       <footer class="footer"><a class="footer-brand" href="#top">DOG<span>CPT</span></a><span>반려견스타일리스트 3급 필기 연습</span><span class="footer-right">BUILD YOUR CONFIDENCE <i>✳</i></span></footer>
     </div>
     <script src="./app.js?v=20261112-1" defer></script>
-    <script src="./anatomy.js?v=20261111-2" defer></script>
+    <script src="./anatomy.js?v=20261113-1" defer></script>
   </body>
 </html>
